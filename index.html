@@ -1,0 +1,2599 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Information Management Course</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Outfit', sans-serif; }
+    .lesson-card:hover { transform: translateY(-2px); }
+    .progress-ring { transition: stroke-dashoffset 0.5s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    .animate-fade { animation: fadeIn 0.4s ease forwards; }
+    .animate-slide { animation: slideIn 0.3s ease forwards; }
+    .quiz-option:hover:not(.selected):not(.correct):not(.incorrect) { background: #f0fdf4; border-color: #06b6d4; }
+    .quiz-option.selected { background: #dbeafe; border-color: #06b6d4; }
+    .quiz-option.correct { background: #dcfce7; border-color: #06b6d4; }
+    .quiz-option.incorrect { background: #fee2e2; border-color: #ef4444; }
+    .activity-item.completed { opacity: 0.7; }
+    .tab-active { border-bottom: 3px solid #06b6d4; color: #0e7490; font-weight: 600; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full bg-slate-50 text-slate-800">
+  <div id="app" class="h-full w-full overflow-auto"></div>
+  <script>
+    // Course Data Structure
+    const courseData = {
+      weeks: [
+        {
+          number: 1,
+          title: "Introduction to Information Systems",
+          icon: "🖥️",
+          color: "#06b6d4",
+          lessons: [
+            {
+              id: "w1l1",
+              title: "What is an Information System?",
+              duration: "25 min",
+              content: `
+                <h2>Understanding Information Systems</h2>
+                <p>An Information System (IS) is an integrated and set of components for collecting, storing, processing, and distributing information to support decision-making and control in organizations. It combines technology, people, and processes to create value.</p>
+                
+                <h3>Key Definition</h3>
+                <p>IS is not just about technology—it's about using technology effectively to manage information and support organizational goals. It encompasses both technical and human elements.</p>
+
+                <h3>IS vs IT</h3>
+                <div class="comparison-grid">
+                  <div class="comparison-item">
+                    <strong>Information Technology (IT)</strong>
+                    <p>The infrastructure and tools: hardware, software, networks</p>
+                  </div>
+                  <div class="comparison-item">
+                    <strong>Information System (IS)</strong>
+                    <p>The entire system: IT + People + Processes + Data + Organization</p>
+                  </div>
+                </div>
+
+                <h3>Why IS Matters</h3>
+                <ul>
+                  <li><strong>Competitive Advantage:</strong> Differentiate from competitors</li>
+                  <li><strong>Efficiency:</strong> Automate and optimize operations</li>
+                  <li><strong>Decision Making:</strong> Enable data-driven decisions</li>
+                  <li><strong>Innovation:</strong> Create new products and services</li>
+                  <li><strong>Customer Value:</strong> Improve customer experience</li>
+                </ul>
+
+                <h3>Historical Evolution of IS</h3>
+                <div class="timeline">
+                  <div class="timeline-item">
+                    <span class="timeline-date">1960s</span>
+                    <strong>Transaction Processing</strong>
+                    <p>Automation of routine tasks</p>
+                  </div>
+                  <div class="timeline-item">
+                    <span class="timeline-date">1970s-80s</span>
+                    <strong>Management Information Systems</strong>
+                    <p>Support for middle management</p>
+                  </div>
+                  <div class="timeline-item">
+                    <span class="timeline-date">1990s</span>
+                    <strong>Enterprise Systems</strong>
+                    <p>Integration across organizations</p>
+                  </div>
+                  <div class="timeline-item">
+                    <span class="timeline-date">2000s+</span>
+                    <strong>Digital Transformation</strong>
+                    <p>Cloud, Mobile, AI, Analytics</p>
+                  </div>
+                </div>
+              `
+            },
+            {
+              id: "w1l2",
+              title: "IS Components",
+              duration: "30 min",
+              content: `
+                <h2>Components of Information Systems</h2>
+                <p>An IS comprises six interrelated components that work together to process data into useful information.</p>
+
+                <h3>The Six Components</h3>
+                <div class="components-grid">
+                  <div class="component-card">
+                    <span class="component-icon">⚙️</span>
+                    <strong>Hardware</strong>
+                    <p>Physical devices: computers, servers, storage, networks, peripherals</p>
+                  </div>
+                  <div class="component-card">
+                    <span class="component-icon">💻</span>
+                    <strong>Software</strong>
+                    <p>Programs and applications: operating systems, business applications, databases</p>
+                  </div>
+                  <div class="component-card">
+                    <span class="component-icon">📊</span>
+                    <strong>Data</strong>
+                    <p>Raw facts and figures: customer info, transactions, operational metrics</p>
+                  </div>
+                  <div class="component-card">
+                    <span class="component-icon">👥</span>
+                    <strong>People</strong>
+                    <p>Users and IT professionals: managers, employees, developers, support staff</p>
+                  </div>
+                  <div class="component-card">
+                    <span class="component-icon">🔄</span>
+                    <strong>Process</strong>
+                    <p>Procedures and workflows: how work is done, business processes, standards</p>
+                  </div>
+                  <div class="component-card">
+                    <span class="component-icon">🌐</span>
+                    <strong>Networks</strong>
+                    <p>Communication infrastructure: internet, intranets, cloud, connectivity</p>
+                  </div>
+                </div>
+
+                <h3>How Components Interact</h3>
+                <p>The components work together in a cycle:</p>
+                <div class="process-flow">
+                  <div class="flow-item">Input</div>
+                  <div class="arrow">→</div>
+                  <div class="flow-item">Processing</div>
+                  <div class="arrow">→</div>
+                  <div class="flow-item">Output</div>
+                  <div class="arrow">→</div>
+                  <div class="flow-item">Feedback</div>
+                </div>
+
+                <h3>Example: Banking System</h3>
+                <ul>
+                  <li><strong>Hardware:</strong> ATM machines, bank servers</li>
+                  <li><strong>Software:</strong> Banking applications, security software</li>
+                  <li><strong>Data:</strong> Account information, transaction history</li>
+                  <li><strong>People:</strong> Bank staff, customers, IT support</li>
+                  <li><strong>Process:</strong> Deposit procedures, loan approval process</li>
+                  <li><strong>Networks:</strong> ATM networks, internet banking infrastructure</li>
+                </ul>
+              `
+            },
+            {
+              id: "w1l3",
+              title: "Role of IS in Organizations and Nation-Building",
+              duration: "35 min",
+              content: `
+                <h2>IS in Organizations and Society</h2>
+
+                <h3>IS Role in Organizations</h3>
+                <div class="org-roles">
+                  <div class="role-section">
+                    <strong>Operational Excellence</strong>
+                    <p>Streamline processes, reduce costs, improve quality through automation and efficiency</p>
+                  </div>
+                  <div class="role-section">
+                    <strong>New Business Models</strong>
+                    <p>Enable digital businesses: e-commerce, platforms, on-demand services</p>
+                  </div>
+                  <div class="role-section">
+                    <strong>Customer Intimacy</strong>
+                    <p>Better understand customers, personalize services, improve satisfaction</p>
+                  </div>
+                  <div class="role-section">
+                    <strong>Strategic Advantage</strong>
+                    <p>Competitive differentiation, market leadership, innovation</p>
+                  </div>
+                  <div class="role-section">
+                    <strong>Decision Support</strong>
+                    <p>Real-time analytics, insights, and data-driven decision making</p>
+                  </div>
+                  <div class="role-section">
+                    <strong>Agility</strong>
+                    <p>Rapid response to market changes, flexibility, scalability</p>
+                  </div>
+                </div>
+
+                <h3>IS for Nation-Building</h3>
+                <p>IS plays a critical role in national development and governance:</p>
+
+                <h4>Economic Development</h4>
+                <ul>
+                  <li>Create tech jobs and skills development</li>
+                  <li>Enable entrepreneurship and startups</li>
+                  <li>Improve productivity and competitiveness</li>
+                  <li>Attract foreign investment</li>
+                </ul>
+
+                <h4>Digital Government (E-Governance)</h4>
+                <ul>
+                  <li>Provide citizen services online</li>
+                  <li>Improve government transparency</li>
+                  <li>Reduce bureaucracy and corruption</li>
+                  <li>Enable efficient tax collection and service delivery</li>
+                </ul>
+
+                <h4>Social Development</h4>
+                <ul>
+                  <li>Education: Online learning platforms, digital literacy</li>
+                  <li>Healthcare: Telemedicine, health information systems</li>
+                  <li>Finance: Digital banking, financial inclusion</li>
+                  <li>Agriculture: Smart farming, market information</li>
+                </ul>
+
+                <h4>Infrastructure & Security</h4>
+                <ul>
+                  <li>Build digital infrastructure</li>
+                  <li>Cybersecurity and data protection</li>
+                  <li>National data governance</li>
+                  <li>Disaster management systems</li>
+                </ul>
+
+                <h3>Real-World Example: Digital India</h3>
+                <p>India's Digital India initiative demonstrates IS for nation-building:</p>
+                <div class="example-box">
+                  <ul>
+                    <li>Aadhaar: Digital identity system for all citizens</li>
+                    <li>Digital Payment Infrastructure: NEFT, RTGS, UPI</li>
+                    <li>E-Governance: Online government services</li>
+                    <li>Digital Literacy: Technology training programs</li>
+                    <li>BharatNet: High-speed internet to rural areas</li>
+                  </ul>
+                </div>
+              `
+            }
+          ],
+          activities: [
+            {
+              id: "w1a1",
+              title: "IS Component Analysis",
+              type: "analysis",
+              description: "Analyze an organization's IS components.",
+              instructions: [
+                "Choose an organization you're familiar with (retail store, bank, school, etc.)",
+                "Identify each of the six IS components in that organization",
+                "Describe how each component contributes to the organization's operations",
+                "Explain how these components work together"
+              ]
+            },
+            {
+              id: "w1a2",
+              title: "Nation-Building Impact Study",
+              type: "research",
+              description: "Research IS impact on national development.",
+              instructions: [
+                "Choose a developing country or region",
+                "Identify 3 major IS/IT initiatives in that country",
+                "Explain how each initiative supports nation-building",
+                "Discuss challenges and opportunities"
+              ]
+            }
+          ],
+          quiz: {
+            id: "w1q",
+            title: "Week 1 Assessment",
+            questions: [
+              {
+                id: "w1q1",
+                question: "What is the primary difference between IT and IS?",
+                options: [
+                  "IT is hardware, IS is software",
+                  "IT is infrastructure/tools, IS is the entire system including people and processes",
+                  "IS is outdated, IT is modern",
+                  "They are the same thing"
+                ],
+                correct: 1,
+                explanation: "IT refers to technology infrastructure, while IS is the holistic system that combines IT with people, processes, data, and organizational context."
+              },
+              {
+                id: "w1q2",
+                question: "Which of the following is NOT one of the six IS components?",
+                options: ["Hardware", "Software", "Data", "Strategy"],
+                correct: 3,
+                explanation: "The six components are: Hardware, Software, Data, People, Process, and Networks. Strategy is important but not a component of the IS itself."
+              },
+              {
+                id: "w1q3",
+                question: "How does IS support nation-building?",
+                options: [
+                  "Only through military applications",
+                  "Through e-governance, digital economy, social services, and infrastructure",
+                  "It doesn't contribute to nation-building",
+                  "Only in developed countries"
+                ],
+                correct: 1,
+                explanation: "IS enables nation-building through multiple channels: governance, economic development, education, healthcare, financial inclusion, and infrastructure."
+              },
+              {
+                id: "w1q4",
+                question: "What is the primary input in an IS?",
+                options: ["Hardware", "Data", "Software", "Networks"],
+                correct: 1,
+                explanation: "Data is the primary input that gets processed into useful information through the IS components."
+              },
+              {
+                id: "w1q5",
+                question: "Which component of IS involves decision-makers and IT professionals?",
+                options: ["Hardware", "Software", "People", "Networks"],
+                correct: 2,
+                explanation: "The People component includes all users, managers, employees, developers, and support staff who interact with and manage the IS."
+              }
+            ]
+          }
+        },
+        {
+          number: 2,
+          title: "IS for Competitive Advantage",
+          icon: "🏆",
+          color: "#8b5cf6",
+          lessons: [
+            {
+              id: "w2l1",
+              title: "IS and Competitive Advantage",
+              duration: "30 min",
+              content: `
+                <h2>Gaining Competitive Advantage with IS</h2>
+                <p>Organizations use IS to differentiate themselves from competitors and create sustainable competitive advantage. This advantage can come from improved efficiency, innovation, or customer relationships.</p>
+
+                <h3>Types of Competitive Advantage</h3>
+                <div class="advantage-types">
+                  <div class="advantage-item">
+                    <strong>Cost Leadership</strong>
+                    <p>Lower costs through automation and efficiency. Example: Walmart's inventory system</p>
+                  </div>
+                  <div class="advantage-item">
+                    <strong>Differentiation</strong>
+                    <p>Unique products/services. Example: Netflix personalized recommendations</p>
+                  </div>
+                  <div class="advantage-item">
+                    <strong>Focus/Niche</strong>
+                    <p>Target specific market segment. Example: E-commerce platforms for specific products</p>
+                  </div>
+                  <div class="advantage-item">
+                    <strong>Innovation</strong>
+                    <p>Create new markets. Example: Uber disrupted taxi industry with IS platform</p>
+                  </div>
+                </div>
+
+                <h3>Strategic Uses of IS</h3>
+                <div class="strategic-uses">
+                  <div class="use-card">
+                    <span class="icon">🔧</span>
+                    <strong>Automate</strong>
+                    <p>Replace manual processes with automated systems to reduce costs and errors</p>
+                  </div>
+                  <div class="use-card">
+                    <span class="icon">🔄</span>
+                    <strong>Streamline</strong>
+                    <p>Reorganize business processes to improve efficiency and reduce time</p>
+                  </div>
+                  <div class="use-card">
+                    <span class="icon">🔍</span>
+                    <strong>Optimize</strong>
+                    <p>Analyze data to find best practices and improve performance</p>
+                  </div>
+                  <div class="use-card">
+                    <span class="icon">🚀</span>
+                    <strong>Innovate</strong>
+                    <p>Create new business models and products using technology</p>
+                  </div>
+                </div>
+
+                <h3>IS for Different Stakeholders</h3>
+                <table>
+                  <tr>
+                    <th>Stakeholder</th>
+                    <th>IS Advantage</th>
+                  </tr>
+                  <tr>
+                    <td>Customers</td>
+                    <td>Better service, convenience, personalization</td>
+                  </tr>
+                  <tr>
+                    <td>Employees</td>
+                    <td>Better tools, automation of tedious tasks, productivity</td>
+                  </tr>
+                  <tr>
+                    <td>Suppliers</td>
+                    <td>Efficient ordering, real-time visibility, partnership</td>
+                  </tr>
+                  <tr>
+                    <td>Shareholders</td>
+                    <td>Higher profitability, growth, market share</td>
+                  </tr>
+                </table>
+
+                <h3>Examples of IS Creating Advantage</h3>
+                <ul>
+                  <li><strong>Amazon:</strong> Real-time inventory, recommendation engine, efficient logistics</li>
+                  <li><strong>Apple:</strong> Integrated ecosystem, supply chain innovation, customer experience</li>
+                  <li><strong>Booking.com:</strong> Platform business model connecting travelers and providers</li>
+                  <li><strong>Tesla:</strong> Data-driven vehicle design, over-the-air updates, energy management</li>
+                </ul>
+              `
+            },
+            {
+              id: "w2l2",
+              title: "Value Chain and IS",
+              duration: "30 min",
+              content: `
+                <h2>The Value Chain Model</h2>
+                <p>Michael Porter's Value Chain shows how organizations create value through a series of activities. IS can optimize each activity to create competitive advantage.</p>
+
+                <h3>Value Chain Components</h3>
+                <div class="value-chain">
+                  <h4>Primary Activities (Direct Value)</h4>
+                  <div class="chain-items">
+                    <div class="chain-item">
+                      <strong>Inbound Logistics</strong>
+                      <p>Receiving and handling inputs (materials, inventory management)</p>
+                    </div>
+                    <div class="chain-item">
+                      <strong>Operations</strong>
+                      <p>Transforming inputs into products (manufacturing, assembly)</p>
+                    </div>
+                    <div class="chain-item">
+                      <strong>Outbound Logistics</strong>
+                      <p>Distributing outputs (shipping, delivery management)</p>
+                    </div>
+                    <div class="chain-item">
+                      <strong>Marketing & Sales</strong>
+                      <p>Promoting and selling products (advertising, pricing, sales)</p>
+                    </div>
+                    <div class="chain-item">
+                      <strong>Service</strong>
+                      <p>Supporting products after sale (warranty, customer support)</p>
+                    </div>
+                  </div>
+
+                  <h4>Support Activities (Enable Primary)</h4>
+                  <div class="chain-items">
+                    <div class="chain-item">
+                      <strong>Firm Infrastructure</strong>
+                      <p>Management, planning, finance (accounting systems, ERP)</p>
+                    </div>
+                    <div class="chain-item">
+                      <strong>Human Resources</strong>
+                      <p>Recruiting, training, development (HRIS systems)</p>
+                    </div>
+                    <div class="chain-item">
+                      <strong>Technology Development</strong>
+                      <p>R&D, process improvement (CAD, simulation tools)</p>
+                    </div>
+                    <div class="chain-item">
+                      <strong>Procurement</strong>
+                      <p>Purchasing of inputs (supplier systems, e-procurement)</p>
+                    </div>
+                  </div>
+                </div>
+
+                <h3>IS Impact on Value Chain</h3>
+                <table>
+                  <tr>
+                    <th>Activity</th>
+                    <th>IS Application</th>
+                    <th>Benefit</th>
+                  </tr>
+                  <tr>
+                    <td>Inbound Logistics</td>
+                    <td>RFID tracking, warehouse systems</td>
+                    <td>Real-time visibility, reduced errors</td>
+                  </tr>
+                  <tr>
+                    <td>Operations</td>
+                    <td>Manufacturing automation, IoT sensors</td>
+                    <td>Improved quality, reduced downtime</td>
+                  </tr>
+                  <tr>
+                    <td>Outbound Logistics</td>
+                    <td>Route optimization, GPS tracking</td>
+                    <td>Faster delivery, lower costs</td>
+                  </tr>
+                  <tr>
+                    <td>Marketing & Sales</td>
+                    <td>CRM, analytics, digital marketing</td>
+                    <td>Better targeting, increased conversion</td>
+                  </tr>
+                  <tr>
+                    <td>Service</td>
+                    <td>Help desk systems, chatbots</td>
+                    <td>Faster response, 24/7 availability</td>
+                  </tr>
+                </table>
+
+                <h3>Value Chain Network</h3>
+                <p>Organizations are part of a larger ecosystem (suppliers, partners, customers). IS enables:</p>
+                <ul>
+                  <li><strong>Supply Chain Integration:</strong> Seamless information flow with suppliers</li>
+                  <li><strong>Customer Relationships:</strong> Better understanding and serving customers</li>
+                  <li><strong>Partner Collaboration:</strong> Joint planning and execution</li>
+                  <li><strong>Industry Networks:</strong> Standards and platforms</li>
+                </ul>
+              `
+            },
+            {
+              id: "w2l3",
+              title: "IT-Business Alignment",
+              duration: "25 min",
+              content: `
+                <h2>IT-Business Alignment</h2>
+                <p>Alignment is the degree to which IT strategy supports and is supported by business strategy. Strong alignment maximizes IS benefits and organizational success.</p>
+
+                <h3>The Alignment Challenge</h3>
+                <p>Many organizations struggle with alignment:</p>
+                <div class="challenge-box">
+                  <p><strong>Problem:</strong> IT investments don't deliver expected business value</p>
+                  <p><strong>Reason:</strong> IT strategy developed separately from business strategy</p>
+                  <p><strong>Result:</strong> Misalignment, wasted resources, lost opportunities</p>
+                </div>
+
+                <h3>Dimensions of Alignment</h3>
+                <div class="alignment-dims">
+                  <div class="dim-item">
+                    <strong>Strategic Alignment</strong>
+                    <p>IT strategy supports business strategy and goals</p>
+                  </div>
+                  <div class="dim-item">
+                    <strong>Operational Alignment</strong>
+                    <p>IT operations support daily business operations</p>
+                  </div>
+                  <div class="dim-item">
+                    <strong>Cultural Alignment</strong>
+                    <p>IT culture aligns with business culture</p>
+                  </div>
+                  <div class="dim-item">
+                    <strong>Structural Alignment</strong>
+                    <p>IT organization structure fits business structure</p>
+                  </div>
+                </div>
+
+                <h3>Business-IT Strategic Alignment Model</h3>
+                <div class="alignment-model">
+                  <div class="model-box">
+                    <strong>Business Strategy</strong>
+                    <p>Market position, competitive strategy, growth goals</p>
+                  </div>
+                  <div class="model-arrow">↔</div>
+                  <div class="model-box">
+                    <strong>IT Strategy</strong>
+                    <p>Technology roadmap, capabilities, investments</p>
+                  </div>
+                </div>
+
+                <h3>How to Achieve Alignment</h3>
+                <ol>
+                  <li><strong>Involve IT in Business Planning:</strong> Include CIO in strategic discussions</li>
+                  <li><strong>Business Understands IT:</strong> Business leaders learn IT capabilities and constraints</li>
+                  <li><strong>Clear Communication:</strong> Regular dialogue between business and IT</li>
+                  <li><strong>Balanced Governance:</strong> Joint decision-making on IT investments</li>
+                  <li><strong>Performance Metrics:</strong> Align IT metrics with business metrics</li>
+                  <li><strong>Change Management:</strong> Support organizational change</li>
+                </ol>
+
+                <h3>Benefits of Alignment</h3>
+                <ul>
+                  <li>✓ Higher ROI on IT investments</li>
+                  <li>✓ Faster time-to-market for new initiatives</li>
+                  <li>✓ Better customer satisfaction</li>
+                  <li>✓ Improved employee productivity</li>
+                  <li>✓ Reduced IT costs and waste</li>
+                  <li>✓ Enhanced competitive position</li>
+                </ul>
+              `
+            }
+          ],
+          activities: [
+            {
+              id: "w2a1",
+              title: "Value Chain Analysis",
+              type: "analysis",
+              description: "Apply Porter's Value Chain to a real organization.",
+              instructions: [
+                "Choose a company (e.g., Starbucks, Netflix, Ford)",
+                "Map their primary activities",
+                "Map their support activities",
+                "Identify how IS supports 3 key activities",
+                "Suggest IS improvements"
+              ]
+            },
+            {
+              id: "w2a2",
+              title: "Competitive Advantage Strategy",
+              type: "case-study",
+              description: "Design an IS strategy for competitive advantage.",
+              instructions: [
+                "Select an industry you're interested in",
+                "Identify current market leaders and their IS advantages",
+                "Propose how a new entrant could use IS to compete",
+                "Explain which competitive advantage type you'd pursue"
+              ]
+            }
+          ],
+          quiz: {
+            id: "w2q",
+            title: "Week 2 Assessment",
+            questions: [
+              {
+                id: "w2q1",
+                question: "What are the four main types of competitive advantage?",
+                options: [
+                  "Profit, Revenue, Market Share, Efficiency",
+                  "Cost Leadership, Differentiation, Focus, Innovation",
+                  "Technology, People, Processes, Culture",
+                  "Quality, Speed, Price, Service"
+                ],
+                correct: 1,
+                explanation: "Porter identified four generic competitive strategies: Cost Leadership (lowest cost), Differentiation (unique product), Focus (niche market), and Innovation (new markets)."
+              },
+              {
+                id: "w2q2",
+                question: "Which is a primary activity in Porter's Value Chain?",
+                options: ["Finance", "Human Resources", "Outbound Logistics", "Technology Development"],
+                correct: 2,
+                explanation: "Primary activities directly create value: Inbound Logistics, Operations, Outbound Logistics, Marketing & Sales, and Service."
+              },
+              {
+                id: "w2q3",
+                question: "What does IT-Business alignment mean?",
+                options: [
+                  "IT strategy supports business strategy",
+                  "Both IT and business use same software",
+                  "Business decides all IT decisions",
+                  "IT runs the business"
+                ],
+                correct: 0,
+                explanation: "Alignment means IT strategy is developed to support and advance the organization's business strategy and goals."
+              },
+              {
+                id: "w2q4",
+                question: "How does IS support outbound logistics?",
+                options: [
+                  "Hiring delivery personnel",
+                  "Route optimization and GPS tracking",
+                  "Manufacturing products",
+                  "Advertising to customers"
+                ],
+                correct: 1,
+                explanation: "IS supports outbound logistics through tools like route optimization software and GPS tracking to improve delivery efficiency."
+              },
+              {
+                id: "w2q5",
+                question: "What is a benefit of achieving IT-Business alignment?",
+                options: [
+                  "Higher IT department budget",
+                  "Lower IT costs and faster time-to-market",
+                  "More IT projects",
+                  "Better IT salaries"
+                ],
+                correct: 1,
+                explanation: "Alignment produces better ROI, faster innovation, lower costs, and better business results through focused IT investments."
+              }
+            ]
+          }
+        },
+        {
+          number: 3,
+          title: "Types of Information Systems",
+          icon: "🔧",
+          color: "#ec4899",
+          lessons: [
+            {
+              id: "w3l1",
+              title: "Transaction Processing Systems (TPS)",
+              duration: "25 min",
+              content: `
+                <h2>Transaction Processing Systems</h2>
+                <p>TPS are systems designed to record, process, and store daily business transactions efficiently and accurately. They are the backbone of most organizations' operations.</p>
+
+                <h3>Characteristics of TPS</h3>
+                <ul>
+                  <li><strong>High Volume:</strong> Process thousands/millions of transactions daily</li>
+                  <li><strong>Real-time:</strong> Immediate or near-immediate processing</li>
+                  <li><strong>Accuracy Critical:</strong> Errors can be costly</li>
+                  <li><strong>Data Integrity:</strong> Must maintain data consistency</li>
+                  <li><strong>Reliability:</strong> Must be available 24/7</li>
+                  <li><strong>Detailed Data:</strong> Captures granular transaction details</li>
+                </ul>
+
+                <h3>Examples of TPS</h3>
+                <div class="examples-grid">
+                  <div class="example-item">
+                    <strong>Banking</strong>
+                    <p>ATM withdrawals, deposits, transfers, electronic fund transfers</p>
+                  </div>
+                  <div class="example-item">
+                    <strong>Retail</strong>
+                    <p>Point-of-sale (POS) systems processing customer purchases</p>
+                  </div>
+                  <div class="example-item">
+                    <strong>Airlines</strong>
+                    <p>Ticketing, reservations, check-in systems</p>
+                  </div>
+                  <div class="example-item">
+                    <strong>Manufacturing</strong>
+                    <p>Production scheduling, order processing, inventory tracking</p>
+                  </div>
+                  <div class="example-item">
+                    <strong>Healthcare</strong>
+                    <p>Patient registration, billing, prescription processing</p>
+                  </div>
+                  <div class="example-item">
+                    <strong>E-commerce</strong>
+                    <p>Order processing, payment handling, inventory updates</p>
+                  </div>
+                </div>
+
+                <h3>TPS Processing Cycle</h3>
+                <div class="cycle-diagram">
+                  <div class="cycle-step">Collection</div>
+                  <div class="cycle-arrow">→</div>
+                  <div class="cycle-step">Validation</div>
+                  <div class="cycle-arrow">→</div>
+                  <div class="cycle-step">Processing</div>
+                  <div class="cycle-arrow">→</div>
+                  <div class="cycle-step">Storage</div>
+                  <div class="cycle-arrow">→</div>
+                  <div class="cycle-step">Reporting</div>
+                </div>
+
+                <h3>Key Concerns</h3>
+                <ul>
+                  <li>System downtime can halt operations (critical systems)</li>
+                  <li>Data security and fraud prevention</li>
+                  <li>Maintaining ACID properties (Atomicity, Consistency, Isolation, Durability)</li>
+                  <li>Scalability for growth</li>
+                </ul>
+              `
+            },
+            {
+              id: "w3l2",
+              title: "MIS, DSS, ESS, and Functional IS",
+              duration: "30 min",
+              content: `
+                <h2>Information Systems by Level and Function</h2>
+
+                <h3>Systems by Organizational Level</h3>
+                
+                <h4>Management Information Systems (MIS)</h4>
+                <p>Support middle management for tactical/short-term decision-making</p>
+                <div class="system-box">
+                  <ul>
+                    <li><strong>Purpose:</strong> Monitor, control, and coordinate activities</li>
+                    <li><strong>Data:</strong> Aggregated transaction data, reports, summaries</li>
+                    <li><strong>Users:</strong> Department managers, supervisors</li>
+                    <li><strong>Output:</strong> Reports, dashboards, KPI tracking</li>
+                    <li><strong>Examples:</strong> Sales by region, inventory status reports, expense tracking</li>
+                  </ul>
+                </div>
+
+                <h4>Decision Support Systems (DSS)</h4>
+                <p>Support managers in semi-structured and unstructured decision-making</p>
+                <div class="system-box">
+                  <ul>
+                    <li><strong>Purpose:</strong> Analyze alternatives and support complex decisions</li>
+                    <li><strong>Data:</strong> Internal data plus external sources</li>
+                    <li><strong>Users:</strong> Managers and analysts</li>
+                    <li><strong>Features:</strong> What-if analysis, simulations, modeling</li>
+                    <li><strong>Examples:</strong> Financial forecasting, marketing mix optimization, location analysis</li>
+                  </ul>
+                </div>
+
+                <h4>Executive Support Systems (ESS)</h4>
+                <p>Support senior executives for strategic decision-making</p>
+                <div class="system-box">
+                  <ul>
+                    <li><strong>Purpose:</strong> Strategic planning and long-term direction</li>
+                    <li><strong>Data:</strong> Highly summarized, external focus</li>
+                    <li><strong>Users:</strong> C-level executives (CEO, CFO, COO)</li>
+                    <li><strong>Output:</strong> Strategic dashboards, market intelligence</li>
+                    <li><strong>Examples:</strong> Balanced scorecard, competitive analysis, revenue forecasts</li>
+                  </ul>
+                </div>
+
+                <h3>Systems by Function</h3>
+                <p>Functional IS serve specific business functions across all levels:</p>
+
+                <h4>Functional IS Categories</h4>
+                <table>
+                  <tr>
+                    <th>Function</th>
+                    <th>Purpose</th>
+                    <th>Examples</th>
+                  </tr>
+                  <tr>
+                    <td>Finance/Accounting</td>
+                    <td>Record financial transactions, budgeting, reporting</td>
+                    <td>General ledger, accounts payable/receivable, financial reporting</td>
+                  </tr>
+                  <tr>
+                    <td>Sales & Marketing</td>
+                    <td>Manage customer relationships, sales pipeline, campaigns</td>
+                    <td>CRM, campaign management, sales analytics</td>
+                  </tr>
+                  <tr>
+                    <td>Human Resources</td>
+                    <td>Manage employees, payroll, recruitment, benefits</td>
+                    <td>HRIS, applicant tracking, payroll systems</td>
+                  </tr>
+                  <tr>
+                    <td>Operations/Manufacturing</td>
+                    <td>Production planning, quality control, logistics</td>
+                    <td>MRP, ERP, supply chain management</td>
+                  </tr>
+                  <tr>
+                    <td>Customer Service</td>
+                    <td>Handle inquiries, support tickets, complaints</td>
+                    <td>Help desk, ticketing systems, knowledge bases</td>
+                  </tr>
+                </table>
+
+                <h3>Integrated Systems</h3>
+                <p><strong>Enterprise Resource Planning (ERP):</strong> Integrated system that combines all functional IS into a single system. Examples: SAP, Oracle, Microsoft Dynamics</p>
+                <p>Benefits: Single database, consistent data, process integration, better visibility</p>
+              `
+            },
+            {
+              id: "w3l3",
+              title: "Emerging and Specialized Systems",
+              duration: "25 min",
+              content: `
+                <h2>Emerging Information Systems</h2>
+
+                <h3>Business Intelligence & Analytics (BI/BA)</h3>
+                <p>Convert raw data into actionable insights for strategic decisions</p>
+                <ul>
+                  <li>Data warehousing: Centralize data from multiple sources</li>
+                  <li>Data mining: Find patterns and relationships</li>
+                  <li>Analytics: Descriptive, predictive, prescriptive</li>
+                  <li>Dashboards and visualization: Present insights visually</li>
+                </ul>
+
+                <h3>Customer Relationship Management (CRM)</h3>
+                <p>Manage all customer interactions and relationships</p>
+                <ul>
+                  <li>Sales force automation</li>
+                  <li>Customer service and support</li>
+                  <li>Marketing automation</li>
+                  <li>Customer analytics and segmentation</li>
+                </ul>
+
+                <h3>Supply Chain Management (SCM)</h3>
+                <p>Optimize flow of materials and information across supply chain</p>
+                <ul>
+                  <li>Supplier coordination</li>
+                  <li>Inventory optimization</li>
+                  <li>Logistics and distribution</li>
+                  <li>Demand planning</li>
+                </ul>
+
+                <h3>Knowledge Management Systems</h3>
+                <p>Capture, organize, and share organizational knowledge</p>
+                <ul>
+                  <li>Document management</li>
+                  <li>Expert systems</li>
+                  <li>Learning management systems</li>
+                  <li>Collaboration platforms</li>
+                </ul>
+
+                <h3>Emerging Technologies</h3>
+                <div class="emerging-tech">
+                  <div class="tech-item">
+                    <strong>Artificial Intelligence/Machine Learning</strong>
+                    <p>Automate decisions, predictive analytics, chatbots</p>
+                  </div>
+                  <div class="tech-item">
+                    <strong>Internet of Things (IoT)</strong>
+                    <p>Connected devices generating real-time data</p>
+                  </div>
+                  <div class="tech-item">
+                    <strong>Cloud Computing</strong>
+                    <p>On-demand IT resources, SaaS applications</p>
+                  </div>
+                  <div class="tech-item">
+                    <strong>Blockchain</strong>
+                    <p>Distributed ledger for trust and transparency</p>
+                  </div>
+                  <div class="tech-item">
+                    <strong>Big Data</strong>
+                    <p>Process large volumes of data for insights</p>
+                  </div>
+                </div>
+              `
+            }
+          ],
+          activities: [
+            {
+              id: "w3a1",
+              title: "System Type Identification",
+              type: "analysis",
+              description: "Identify different IS types in real organizations.",
+              instructions: [
+                "Choose an organization (bank, airline, hospital, retailer)",
+                "Identify 5 different TPS in that organization",
+                "Describe MIS that managers use",
+                "Explain what DSS/ESS might support their decisions"
+              ]
+            },
+            {
+              id: "w3a2",
+              title: "Functional IS Design",
+              type: "practical",
+              description: "Design information systems for a business function.",
+              instructions: [
+                "Choose a business function (e.g., HR or Sales)",
+                "List 5 key business processes in that function",
+                "Design what IS would support each process",
+                "Explain how they integrate with each other"
+              ]
+            }
+          ],
+          quiz: {
+            id: "w3q",
+            title: "Week 3 Assessment",
+            questions: [
+              {
+                id: "w3q1",
+                question: "What is the primary purpose of a Transaction Processing System?",
+                options: [
+                  "Support strategic decision-making",
+                  "Record and process daily business transactions",
+                  "Analyze data trends",
+                  "Create executive reports"
+                ],
+                correct: 1,
+                explanation: "TPS is designed to efficiently record, process, and store high volumes of daily transactions with accuracy and reliability."
+              },
+              {
+                id: "w3q2",
+                question: "Which system would a department manager use to track sales by region?",
+                options: ["TPS", "DSS", "MIS", "ESS"],
+                correct: 2,
+                explanation: "Management Information Systems (MIS) support middle management with aggregated reports and dashboards like sales tracking."
+              },
+              {
+                id: "w3q3",
+                question: "What distinguishes a DSS from an MIS?",
+                options: [
+                  "MIS is more advanced",
+                  "DSS includes modeling and what-if analysis for complex decisions",
+                  "They serve the same purpose",
+                  "MIS is for executives"
+                ],
+                correct: 1,
+                explanation: "DSS includes analytical tools like modeling, simulations, and what-if analysis to support semi-structured decisions."
+              },
+              {
+                id: "w3q4",
+                question: "Which system would be used for financial forecasting and scenario planning?",
+                options: ["TPS", "MIS", "DSS", "CRM"],
+                correct: 2,
+                explanation: "DSS is designed for semi-structured decisions requiring analysis, modeling, and what-if scenarios like financial forecasting."
+              },
+              {
+                id: "w3q5",
+                question: "What is an advantage of an ERP system?",
+                options: [
+                  "It only processes transactions",
+                  "Integrates all functions into one system with consistent data",
+                  "It's cheaper than separate systems",
+                  "It only works in manufacturing"
+                ],
+                correct: 1,
+                explanation: "ERP integrates all business functions into a single system, providing consistent data, process integration, and visibility across the organization."
+              }
+            ]
+          }
+        },
+        {
+          number: 4,
+          title: "Data, Information & Knowledge Management",
+          icon: "📚",
+          color: "#f97316",
+          lessons: [
+            {
+              id: "w4l1",
+              title: "Data vs Information vs Knowledge",
+              duration: "30 min",
+              content: `
+                <h2>The Data-Information-Knowledge Hierarchy</h2>
+                <p>Understanding the differences and relationships between data, information, and knowledge is fundamental to information management.</p>
+
+                <h3>Data</h3>
+                <p><strong>Definition:</strong> Raw facts, figures, and symbols without context or meaning</p>
+                <div class="def-box">
+                  <ul>
+                    <li>No intrinsic meaning by itself</li>
+                    <li>Examples: 23, "Smith", 45.5°C, 2024-01-15</li>
+                    <li>Transactions, sensor readings, observations</li>
+                    <li>Collected and stored in databases</li>
+                  </ul>
+                </div>
+
+                <h3>Information</h3>
+                <p><strong>Definition:</strong> Data that has been processed, organized, and presented with meaning and context</p>
+                <div class="def-box">
+                  <ul>
+                    <li>Reduces uncertainty</li>
+                    <li>Examples: "Average temperature in January is 23°C" or "Customer John Smith had 45.5% satisfaction"</li>
+                    <li>Result of processing and interpreting data</li>
+                    <li>Timely, accurate, relevant, actionable</li>
+                  </ul>
+                </div>
+
+                <h3>Knowledge</h3>
+                <p><strong>Definition:</strong> Information combined with experience, insight, and understanding to support decision-making and action</p>
+                <div class="def-box">
+                  <ul>
+                    <li>Applies information in context</li>
+                    <li>Examples: "High temperatures correlate with high demand, so we should stock more in summer"</li>
+                    <li>Includes understanding of cause-effect relationships</li>
+                    <li>Tacit (personal experience) and explicit (documented)</li>
+                  </ul>
+                </div>
+
+                <h3>Visual Hierarchy</h3>
+                <div class="hierarchy-visual">
+                  <div class="hierarchy-level">
+                    <span class="level-label">Data</span>
+                    <p class="level-desc">Raw facts: 23, 45, 12, 15, 18, 22, 25</p>
+                  </div>
+                  <div class="hierarchy-arrow">↓</div>
+                  <div class="hierarchy-level">
+                    <span class="level-label">Information</span>
+                    <p class="level-desc">Organized data: Average is 19.4°C, up from last month's 15°C</p>
+                  </div>
+                  <div class="hierarchy-arrow">↓</div>
+                  <div class="hierarchy-level">
+                    <span class="level-label">Knowledge</span>
+                    <p class="level-desc">Applied intelligence: Temperature is rising, prepare for summer demand surge</p>
+                  </div>
+                </div>
+
+                <h3>Real-World Example: Retail Store</h3>
+                <table>
+                  <tr>
+                    <th>Level</th>
+                    <th>Example</th>
+                  </tr>
+                  <tr>
+                    <td><strong>Data</strong></td>
+                    <td>Product ID: 123, Price: $25, Quantity Sold: 150, Date: 2024-01-15</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Information</strong></td>
+                    <td>Product 123 sold 150 units at $25 on Jan 15, generating $3,750 revenue (20% higher than Jan 14)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Knowledge</strong></td>
+                    <td>Product 123 shows strong demand on weekends. Stock increase on Fridays improves sales and customer satisfaction</td>
+                  </tr>
+                </table>
+
+                <h3>Characteristics of Good Information</h3>
+                <ul>
+                  <li><strong>Accurate:</strong> Correct and error-free</li>
+                  <li><strong>Complete:</strong> Has all necessary details</li>
+                  <li><strong>Timely:</strong> Available when needed</li>
+                  <li><strong>Relevant:</strong> Applicable to the decision</li>
+                  <li><strong>Concise:</strong> Not excessive</li>
+                  <li><strong>Consistent:</strong> Same meaning throughout</li>
+                </ul>
+              `
+            },
+            {
+              id: "w4l2",
+              title: "The Information Management Cycle",
+              duration: "30 min",
+              content: `
+                <h2>Information Management Cycle</h2>
+                <p>The IM Cycle describes how organizations collect, process, distribute, and use information systematically.</p>
+
+                <h3>The Five Stages of IM Cycle</h3>
+                
+                <h4>1. Collection</h4>
+                <p>Gather data from various sources</p>
+                <div class="stage-details">
+                  <ul>
+                    <li><strong>Internal sources:</strong> Transactions, operations, systems</li>
+                    <li><strong>External sources:</strong> Markets, customers, competitors, government</li>
+                    <li><strong>Methods:</strong> Automatic capture (sensors, systems), surveys, interviews</li>
+                  </ul>
+                </div>
+
+                <h4>2. Organization</h4>
+                <p>Store data in structured formats for easy access and retrieval</p>
+                <div class="stage-details">
+                  <ul>
+                    <li>Database design and architecture</li>
+                    <li>Data classification and categorization</li>
+                    <li>Creating data standards and formats</li>
+                    <li>Data quality management</li>
+                  </ul>
+                </div>
+
+                <h4>3. Processing</h4>
+                <p>Transform data into meaningful information</p>
+                <div class="stage-details">
+                  <ul>
+                    <li>Validation and cleaning</li>
+                    <li>Aggregation and summarization</li>
+                    <li>Analysis and interpretation</li>
+                    <li>Calculations and modeling</li>
+                  </ul>
+                </div>
+
+                <h4>4. Distribution</h4>
+                <p>Make information available to decision-makers</p>
+                <div class="stage-details">
+                  <ul>
+                    <li>Reports and dashboards</li>
+                    <li>Real-time notifications</li>
+                    <li>Push vs. pull methods</li>
+                    <li>Secure and authorized access</li>
+                  </ul>
+                </div>
+
+                <h4>5. Use</h4>
+                <p>Apply information in decision-making and action</p>
+                <div class="stage-details">
+                  <ul>
+                    <li>Strategic decisions</li>
+                    <li>Tactical operations</li>
+                    <li>Process improvements</li>
+                    <li>Problem solving</li>
+                  </ul>
+                </div>
+
+                <h3>IM Cycle Flow</h3>
+                <div class="cycle-flow">
+                  <div class="flow-item">Collection → Organization → Processing → Distribution → Use ↻</div>
+                  <p class="flow-note">Feedback loop: Usage informs what data to collect next</p>
+                </div>
+
+                <h3>Challenges in IM Cycle</h3>
+                <ul>
+                  <li><strong>Data Quality:</strong> Incomplete, inaccurate, inconsistent data</li>
+                  <li><strong>Integration:</strong> Combining data from different systems and sources</li>
+                  <li><strong>Security & Privacy:</strong> Protecting sensitive information</li>
+                  <li><strong>Volume:</strong> Managing increasing amounts of data</li>
+                  <li><strong>Timeliness:</strong> Getting information quickly enough for decisions</li>
+                  <li><strong>Cost:</strong> Information management can be expensive</li>
+                </ul>
+
+                <h3>Best Practices</h3>
+                <ul>
+                  <li>Establish clear data governance policies</li>
+                  <li>Invest in data quality management</li>
+                  <li>Use consistent data standards</li>
+                  <li>Automate collection and processing where possible</li>
+                  <li>Secure and back up data regularly</li>
+                  <li>Train users on information literacy</li>
+                </ul>
+              `
+            },
+            {
+              id: "w4l3",
+              title: "Knowledge Management",
+              duration: "25 min",
+              content: `
+                <h2>Knowledge Management</h2>
+                <p>Knowledge Management (KM) is the process of capturing, organizing, and sharing organizational knowledge to support learning and decision-making.</p>
+
+                <h3>Types of Knowledge</h3>
+                <div class="knowledge-types">
+                  <div class="type-item">
+                    <strong>Tacit Knowledge</strong>
+                    <p>Implicit, personal, hard to articulate. "Knowing how"</p>
+                    <p>Examples: Expert judgment, intuition, experience, skills</p>
+                  </div>
+                  <div class="type-item">
+                    <strong>Explicit Knowledge</strong>
+                    <p>Documented, formal, easy to share. "Knowing that"</p>
+                    <p>Examples: Procedures, manuals, databases, policies</p>
+                  </div>
+                </div>
+
+                <h3>KM Processes</h3>
+                <table>
+                  <tr>
+                    <th>Process</th>
+                    <th>Description</th>
+                    <th>Examples</th>
+                  </tr>
+                  <tr>
+                    <td><strong>Creation</strong></td>
+                    <td>Generate new knowledge through research, innovation, learning</td>
+                    <td>R&D, experimentation, training</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Capture</strong></td>
+                    <td>Document and codify knowledge</td>
+                    <td>Best practices documentation, expert interviews</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Organization</strong></td>
+                    <td>Structure knowledge for easy retrieval</td>
+                    <td>Knowledge bases, ontologies, classification</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Sharing</strong></td>
+                    <td>Transfer knowledge to those who need it</td>
+                    <td>Meetings, training, communities of practice</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Application</strong></td>
+                    <td>Use knowledge to solve problems and create value</td>
+                    <td>Decision-making, innovation, improvement</td>
+                  </tr>
+                </table>
+
+                <h3>KM Technologies</h3>
+                <div class="km-tech">
+                  <div class="tech-item">
+                    <strong>Knowledge Bases</strong>
+                    <p>Repositories of information and best practices</p>
+                  </div>
+                  <div class="tech-item">
+                    <strong>Collaboration Tools</strong>
+                    <p>Enable teams to share and co-create knowledge</p>
+                  </div>
+                  <div class="tech-item">
+                    <strong>Expert Systems</strong>
+                    <p>Capture expert knowledge in automated systems</p>
+                  </div>
+                  <div class="tech-item">
+                    <strong>Learning Management Systems</strong>
+                    <p>Facilitate organizational learning and training</p>
+                  </div>
+                  <div class="tech-item">
+                    <strong>Communities of Practice</strong>
+                    <p>Groups sharing common interests and expertise</p>
+                  </div>
+                </div>
+
+                <h3>Benefits of KM</h3>
+                <ul>
+                  <li>✓ Reduce learning curve for new employees</li>
+                  <li>✓ Avoid repeating mistakes</li>
+                  <li>✓ Leverage best practices across organization</li>
+                  <li>✓ Improve decision quality</li>
+                  <li>✓ Retain institutional knowledge</li>
+                  <li>✓ Foster innovation through knowledge sharing</li>
+                </ul>
+
+                <h3>KM Challenges</h3>
+                <ul>
+                  <li>Not-invented-here syndrome: Resistance to external knowledge</li>
+                  <li>Tacit knowledge difficult to capture</li>
+                  <li>Cultural resistance to sharing</li>
+                  <li>Over-abundance of information</li>
+                  <li>Keeping knowledge current and relevant</li>
+                  <li>Measuring KM value</li>
+                </ul>
+              `
+            }
+          ],
+          activities: [
+            {
+              id: "w4a1",
+              title: "Data-Information-Knowledge Transformation",
+              type: "analysis",
+              description: "Transform raw data into knowledge.",
+              instructions: [
+                "Collect 10 data points (e.g., daily sales figures, temperatures, page views)",
+                "Process this data into meaningful information",
+                "Derive actionable knowledge from the information",
+                "Explain how each level adds value"
+              ]
+            },
+            {
+              id: "w4a2",
+              title: "IM Cycle Design",
+              type: "practical",
+              description: "Design an information management system.",
+              instructions: [
+                "Choose a business process (e.g., customer service, inventory)",
+                "Map the 5 stages of IM cycle for that process",
+                "Identify data sources",
+                "Explain how information flows",
+                "Describe how it supports decision-making"
+              ]
+            }
+          ],
+          quiz: {
+            id: "w4q",
+            title: "Week 4 Assessment",
+            questions: [
+              {
+                id: "w4q1",
+                question: "What is the main difference between data and information?",
+                options: [
+                  "Data is more valuable",
+                  "Data has no context or meaning; information has been processed to provide meaning",
+                  "They are the same thing",
+                  "Information is raw facts"
+                ],
+                correct: 1,
+                explanation: "Data is raw facts without meaning. Information is data that has been processed, organized, and presented with context and meaning."
+              },
+              {
+                id: "w4q2",
+                question: "Which best demonstrates knowledge?",
+                options: [
+                  "Customer bought 5 items on Jan 15",
+                  "Sales in January were $50,000, up 10% from December",
+                  "High sales in January indicate holiday demand; stock accordingly for next year",
+                  "All customers buy more items"
+                ],
+                correct: 2,
+                explanation: "Knowledge applies information with understanding and experience to support decision-making and action."
+              },
+              {
+                id: "w4q3",
+                question: "Which is the first stage in the Information Management Cycle?",
+                options: ["Processing", "Collection", "Distribution", "Use"],
+                correct: 1,
+                explanation: "Collection is the first stage where data is gathered from internal and external sources."
+              },
+              {
+                id: "w4q4",
+                question: "What is tacit knowledge?",
+                options: [
+                  "Knowledge written in documents",
+                  "Personal, implicit knowledge from experience that's hard to articulate",
+                  "Knowledge stored in databases",
+                  "Historical knowledge"
+                ],
+                correct: 1,
+                explanation: "Tacit knowledge is personal, experiential knowledge (expertise, intuition, judgment) that's difficult to capture and share explicitly."
+              },
+              {
+                id: "w4q5",
+                question: "Which is a benefit of knowledge management?",
+                options: [
+                  "Eliminates need for training",
+                  "Retains institutional knowledge and enables organizational learning",
+                  "Makes all employees experts",
+                  "Reduces need for new hires"
+                ],
+                correct: 1,
+                explanation: "KM captures and shares organizational knowledge to reduce learning curves, avoid repeating mistakes, and foster innovation."
+              }
+            ]
+          }
+        },
+        {
+          number: 5,
+          title: "Strategic IS Planning & IT-Business Alignment",
+          icon: "🎯",
+          color: "#14b8a6",
+          lessons: [
+            {
+              id: "w5l1",
+              title: "Strategic IS Planning",
+              duration: "30 min",
+              content: `
+                <h2>Strategic Information Systems Planning</h2>
+                <p>Strategic IS Planning is the process of identifying and prioritizing IS investments and initiatives that align with and support organizational strategy.</p>
+
+                <h3>What is Strategic IS Planning?</h3>
+                <p>It answers critical questions:</p>
+                <ul>
+                  <li>What IS capabilities does the organization need?</li>
+                  <li>How does technology support business strategy?</li>
+                  <li>Which IS projects should be prioritized?</li>
+                  <li>What is the multi-year technology roadmap?</li>
+                  <li>How do we allocate limited IS resources?</li>
+                </ul>
+
+                <h3>Strategic IS Planning Process</h3>
+                <div class="planning-process">
+                  <div class="process-step">
+                    <span class="step-num">1</span>
+                    <strong>Assess Current State</strong>
+                    <p>Evaluate existing IS capabilities, infrastructure, applications</p>
+                  </div>
+                  <div class="process-step">
+                    <span class="step-num">2</span>
+                    <strong>Understand Business Strategy</strong>
+                    <p>Comprehend organizational goals, market position, competitive strategy</p>
+                  </div>
+                  <div class="process-step">
+                    <span class="step-num">3</span>
+                    <strong>Identify IS Needs</strong>
+                    <p>Determine what IS capabilities support business strategy</p>
+                  </div>
+                  <div class="process-step">
+                    <span class="step-num">4</span>
+                    <strong>Develop IS Strategy</strong>
+                    <p>Define technology roadmap, initiatives, investments</p>
+                  </div>
+                  <div class="process-step">
+                    <span class="step-num">5</span>
+                    <strong>Create Action Plans</strong>
+                    <p>Detail implementation, resources, timelines, metrics</p>
+                  </div>
+                  <div class="process-step">
+                    <span class="step-num">6</span>
+                    <strong>Monitor & Adjust</strong>
+                    <p>Track progress, measure value, update plan as needed</p>
+                  </div>
+                </div>
+
+                <h3>Key Components of IS Strategy</h3>
+                <table>
+                  <tr>
+                    <th>Component</th>
+                    <th>Description</th>
+                  </tr>
+                  <tr>
+                    <td><strong>IS Vision</strong></td>
+                    <td>Long-term view of how IS supports organization</td>
+                  </tr>
+                  <tr>
+                    <td><strong>IS Architecture</strong></td>
+                    <td>Overall structure: applications, data, infrastructure, integration</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Technology Roadmap</strong></td>
+                    <td>Multi-year plan for technology adoption and upgrades</td>
+                  </tr>
+                  <tr>
+                    <td><strong>IS Projects Portfolio</strong></td>
+                    <td>Mix of strategic, tactical, and maintenance projects</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Resource Plan</strong></td>
+                    <td>Budget, staff, skills needed</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Risk Management</strong></td>
+                    <td>Identify and mitigate IS risks</td>
+                  </tr>
+                </table>
+
+                <h3>Strategic Choices in IS Planning</h3>
+                <ul>
+                  <li><strong>Build vs. Buy vs. Outsource:</strong> Develop systems or purchase solutions?</li>
+                  <li><strong>Cloud vs. On-Premise:</strong> Where to host systems?</li>
+                  <li><strong>Standardization vs. Flexibility:</strong> Standardized platforms or customization?</li>
+                  <li><strong>Centralization vs. Distribution:</strong> Centralized IT or business unit control?</li>
+                  <li><strong>Innovation vs. Stability:</strong> Cutting-edge or proven technologies?</li>
+                </ul>
+
+                <h3>Challenges in Strategic Planning</h3>
+                <ul>
+                  <li>Rapid technology change makes long-term planning difficult</li>
+                  <li>Business strategy may not be clear or stable</li>
+                  <li>Legacy systems limit flexibility</li>
+                  <li>Budget constraints vs. many needs</li>
+                  <li>Unclear ROI of some IS investments</li>
+                  <li>Organizational resistance to change</li>
+                </ul>
+              `
+            },
+            {
+              id: "w5l2",
+              title: "IT-Business Alignment Models",
+              duration: "30 min",
+              content: `
+                <h2>IT-Business Alignment Models & Frameworks</h2>
+                <p>Various models help organizations achieve and maintain IT-Business alignment.</p>
+
+                <h3>The Strategic Alignment Model (SAM)</h3>
+                <p>Developed by Henderson & Venkatraman, this foundational model shows four dimensions:</p>
+                <div class="sam-model">
+                  <div class="sam-item">
+                    <strong>Strategic Fit (External)</strong>
+                    <p>Alignment between business strategy and IT strategy with external environment</p>
+                  </div>
+                  <div class="sam-item">
+                    <strong>Functional Fit (Internal)</strong>
+                    <p>Alignment between organizational structure/processes and IT infrastructure</p>
+                  </div>
+                </div>
+
+                <h3>Four Alignment Perspectives</h3>
+                <table>
+                  <tr>
+                    <th>Perspective</th>
+                    <th>Focus</th>
+                    <th>What Aligns</th>
+                  </tr>
+                  <tr>
+                    <td><strong>Technology Execution</strong></td>
+                    <td>IT implements business strategy</td>
+                    <td>Business strategy → IT strategy</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Competitive Potential</strong></td>
+                    <td>IT enables new business strategies</td>
+                    <td>IT capabilities → Business strategy</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Service Level</strong></td>
+                    <td>IT operations support business processes</td>
+                    <td>Business processes ↔ IT infrastructure</td>
+                  </tr>
+                  <tr>
+                    <td><strong>IT Governance</strong></td>
+                    <td>IT organization structure supports business</td>
+                    <td>Organization structure ↔ IT structure</td>
+                  </tr>
+                </table>
+
+                <h3>Balanced Scorecard Approach</h3>
+                <p>Translates strategy into measurable objectives across four perspectives:</p>
+                <div class="scorecard-perspectives">
+                  <div class="perspective">
+                    <strong>Financial</strong>
+                    <p>Cost reduction, ROI, revenue growth</p>
+                  </div>
+                  <div class="perspective">
+                    <strong>Customer</strong>
+                    <p>Satisfaction, retention, market share</p>
+                  </div>
+                  <div class="perspective">
+                    <strong>Internal Business</strong>
+                    <p>Operational efficiency, quality, cycle time</p>
+                  </div>
+                  <div class="perspective">
+                    <strong>Learning & Growth</strong>
+                    <p>Employee skills, innovation, capabilities</p>
+                  </div>
+                </div>
+
+                <h3>Business-IT Alignment Maturity</h3>
+                <table>
+                  <tr>
+                    <th>Level</th>
+                    <th>Characteristics</th>
+                  </tr>
+                  <tr>
+                    <td><strong>Level 1: Initial</strong></td>
+                    <td>IT and business operate independently. Limited communication</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Level 2: Repeatable</strong></td>
+                    <td>Some coordination between IT and business. Informal alignment</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Level 3: Defined</strong></td>
+                    <td>Formal processes for planning. IT supports business strategy</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Level 4: Managed</strong></td>
+                    <td>Continuous monitoring and optimization. Metrics-driven</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Level 5: Optimized</strong></td>
+                    <td>IT drives business innovation. Proactive adaptation to change</td>
+                  </tr>
+                </table>
+
+                <h3>Key Success Factors for Alignment</h3>
+                <ul>
+                  <li><strong>Senior Management Commitment:</strong> CEO and CIO partnership</li>
+                  <li><strong>Clear Communication:</strong> Regular dialogue between business and IT</li>
+                  <li><strong>Shared Understanding:</strong> Business understands IT capabilities; IT understands business needs</li>
+                  <li><strong>Governance Structure:</strong> Joint decision-making on IT investments</li>
+                  <li><strong>Performance Metrics:</strong> Align IT metrics with business metrics</li>
+                  <li><strong>Organizational Culture:</strong> Collaborative culture supporting alignment</li>
+                  <li><strong>Change Management:</strong> Support organization through transitions</li>
+                </ul>
+              `
+            },
+            {
+              id: "w5l3",
+              title: "IS Planning Implementation & Metrics",
+              duration: "25 min",
+              content: `
+                <h2>Implementing Strategic IS Plans & Measuring Success</h2>
+
+                <h3>Implementing IS Strategy</h3>
+                <p>Strategic plans must be translated into action:</p>
+
+                <h4>Portfolio Management</h4>
+                <p>Balance mix of projects aligned with strategy:</p>
+                <ul>
+                  <li><strong>Strategic Projects (20-30%):</strong> Enable new business capabilities, create advantage</li>
+                  <li><strong>Tactical Projects (40-50%):</strong> Improve current operations and efficiency</li>
+                  <li><strong>Maintenance Projects (20-30%):</strong> Keep current systems running, fixes, updates</li>
+                </ul>
+
+                <h4>Project Prioritization</h4>
+                <p>Evaluate and prioritize projects based on:</p>
+                <ul>
+                  <li>Strategic alignment with business goals</li>
+                  <li>Expected ROI and business value</li>
+                  <li>Risk level and feasibility</li>
+                  <li>Resource requirements</li>
+                  <li>Dependencies and sequencing</li>
+                </ul>
+
+                <h3>Measuring IS Value & Success</h3>
+                <p>Align IS metrics with business metrics:</p>
+
+                <h4>Business Value Metrics</h4>
+                <table>
+                  <tr>
+                    <th>Category</th>
+                    <th>Examples</th>
+                  </tr>
+                  <tr>
+                    <td><strong>Financial</strong></td>
+                    <td>ROI, cost savings, revenue growth, profit margin</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Customer</strong></td>
+                    <td>Satisfaction, retention, NPS, market share</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Operational</strong></td>
+                    <td>Efficiency, quality, cycle time, error rates</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Strategic</strong></td>
+                    <td>Competitive position, innovation, agility</td>
+                  </tr>
+                </table>
+
+                <h4>IT Operational Metrics</h4>
+                <ul>
+                  <li><strong>System Availability:</strong> Uptime, response time</li>
+                  <li><strong>Quality:</strong> Defect rates, user satisfaction</li>
+                  <li><strong>Efficiency:</strong> Cost per user, projects on time/budget</li>
+                  <li><strong>Security:</strong> Incidents, vulnerabilities, recovery time</li>
+                </ul>
+
+                <h3>Challenges in Measuring IS Value</h3>
+                <ul>
+                  <li>IS value often indirect and long-term</li>
+                  <li>Hard to isolate IS impact from other factors</li>
+                  <li>Benefits may not be fully realized quickly</li>
+                  <li>Intangible benefits hard to quantify</li>
+                  <li>Costs often appear upfront, benefits over time</li>
+                </ul>
+
+                <h3>Best Practices</h3>
+                <ul>
+                  <li>✓ Define success metrics before project starts</li>
+                  <li>✓ Track both financial and non-financial metrics</li>
+                  <li>✓ Measure baseline performance before implementation</li>
+                  <li>✓ Establish governance for tracking and reporting</li>
+                  <li>✓ Regular stakeholder review of progress</li>
+                  <li>✓ Post-implementation reviews to document learnings</li>
+                </ul>
+
+                <h3>Future Trends in Strategic IS Planning</h3>
+                <ul>
+                  <li><strong>Agile Planning:</strong> Shorter cycles, frequent updates vs. long-term fixed plans</li>
+                  <li><strong>Digital Transformation:</strong> Business-wide technology adoption</li>
+                  <li><strong>Cloud-First Strategy:</strong> Default to cloud unless reasons not to</li>
+                  <li><strong>Data-Driven Strategy:</strong> Analytics inform all decisions</li>
+                  <li><strong>Cybersecurity Priority:</strong> Security integrated in all plans</li>
+                  <li><strong>Continuous Alignment:</strong> Real-time adjustment vs. annual planning</li>
+                </ul>
+              `
+            }
+          ],
+          activities: [
+            {
+              id: "w5a1",
+              title: "Strategic IS Plan Development",
+              type: "practical",
+              description: "Create a strategic IS plan for a company.",
+              instructions: [
+                "Choose a company and understand its business strategy",
+                "Assess their current IS capabilities",
+                "Identify IS needs to support strategy",
+                "Develop a 3-year IS roadmap with key initiatives",
+                "Create implementation plan with priorities"
+              ]
+            },
+            {
+              id: "w5a2",
+              title: "Alignment Assessment",
+              type: "case-study",
+              description: "Assess IT-Business alignment in an organization.",
+              instructions: [
+                "Choose a real company or case study",
+                "Evaluate their alignment maturity (Level 1-5)",
+                "Identify gaps between business and IT strategy",
+                "Propose specific steps to improve alignment",
+                "Develop alignment metrics to track progress"
+              ]
+            }
+          ],
+          quiz: {
+            id: "w5q",
+            title: "Week 5 Assessment",
+            questions: [
+              {
+                id: "w5q1",
+                question: "What is the primary goal of Strategic IS Planning?",
+                options: [
+                  "Buy the latest technology",
+                  "Identify and prioritize IS investments that support business strategy",
+                  "Increase IT department budget",
+                  "Modernize all legacy systems"
+                ],
+                correct: 1,
+                explanation: "Strategic IS planning identifies IS capabilities needed to support business strategy and prioritizes investments accordingly."
+              },
+              {
+                id: "w5q2",
+                question: "In the Strategic Alignment Model, what does 'Technology Execution' represent?",
+                options: [
+                  "IT runs the business",
+                  "IT implements and enables business strategy",
+                  "Business tells IT what to do",
+                  "IT and business operate independently"
+                ],
+                correct: 1,
+                explanation: "Technology Execution means IT strategy is developed to implement and support the business strategy effectively."
+              },
+              {
+                id: "w5q3",
+                question: "What is the recommended portfolio balance for IS projects?",
+                options: [
+                  "100% strategic projects",
+                  "Strategic (20-30%), Tactical (40-50%), Maintenance (20-30%)",
+                  "50% maintenance, 50% new development",
+                  "All maintenance to keep systems stable"
+                ],
+                correct: 1,
+                explanation: "Balanced portfolios typically include strategic projects for new capabilities, tactical for improvements, and maintenance to sustain operations."
+              },
+              {
+                id: "w5q4",
+                question: "Which is NOT a success factor for IT-Business alignment?",
+                options: [
+                  "Senior management commitment",
+                  "Clear communication",
+                  "IT independence from business",
+                  "Governance structure"
+                ],
+                correct: 2,
+                explanation: "IT independence would harm alignment. Success requires collaboration, shared understanding, and integrated planning."
+              },
+              {
+                id: "w5q5",
+                question: "What makes measuring IS value challenging?",
+                options: [
+                  "IS has no real value",
+                  "IS value is often indirect, long-term, and hard to isolate from other factors",
+                  "Only financial metrics matter",
+                  "Value is impossible to measure"
+                ],
+                correct: 1,
+                explanation: "IS value is often realized over time through efficiency gains, customer satisfaction, and strategic advantages that are difficult to quantify immediately."
+              }
+            ]
+          }
+        }
+      ]
+    };
+
+    // Default configuration
+    const defaultConfig = {
+      course_title: "Information Management",
+      instructor_name: "Course Instructor",
+      welcome_message: "Welcome to your comprehensive information management journey!",
+      background_color: "#f8fafc",
+      surface_color: "#ffffff",
+      text_color: "#1e293b",
+      primary_action_color: "#06b6d4",
+      secondary_action_color: "#8b5cf6",
+      font_family: "Outfit",
+      font_size: 16
+    };
+
+    // State management
+    let config = { ...defaultConfig };
+    let progressData = [];
+    let currentView = 'dashboard';
+    let currentWeek = null;
+    let currentLesson = null;
+    let currentQuiz = null;
+    let quizState = { currentQuestion: 0, answers: [], submitted: false };
+    let isLoading = false;
+
+    // Data SDK handler
+    const dataHandler = {
+      onDataChanged(data) {
+        progressData = data;
+        updateProgressUI();
+      }
+    };
+
+    // Initialize SDKs
+    async function initializeApp() {
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (newConfig) => {
+            config = { ...config, ...newConfig };
+            applyConfig();
+          },
+          mapToCapabilities: (cfg) => ({
+            recolorables: [
+              { get: () => cfg.background_color || defaultConfig.background_color, set: (v) => { cfg.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+              { get: () => cfg.surface_color || defaultConfig.surface_color, set: (v) => { cfg.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+              { get: () => cfg.text_color || defaultConfig.text_color, set: (v) => { cfg.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+              { get: () => cfg.primary_action_color || defaultConfig.primary_action_color, set: (v) => { cfg.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+              { get: () => cfg.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => { cfg.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } }
+            ],
+            borderables: [],
+            fontEditable: { get: () => cfg.font_family || defaultConfig.font_family, set: (v) => { cfg.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
+            fontSizeable: { get: () => cfg.font_size || defaultConfig.font_size, set: (v) => { cfg.font_size = v; window.elementSdk.setConfig({ font_size: v }); } }
+          }),
+          mapToEditPanelValues: (cfg) => new Map([
+            ["course_title", cfg.course_title || defaultConfig.course_title],
+            ["instructor_name", cfg.instructor_name || defaultConfig.instructor_name],
+            ["welcome_message", cfg.welcome_message || defaultConfig.welcome_message]
+          ])
+        });
+        if (window.elementSdk.config) {
+          config = { ...config, ...window.elementSdk.config };
+        }
+      }
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init(dataHandler);
+        if (!result.isOk) {
+          console.error("Failed to initialize Data SDK");
+        }
+      }
+
+      render();
+      applyConfig();
+    }
+
+    function applyConfig() {
+      const app = document.getElementById('app');
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+
+      document.body.style.backgroundColor = bgColor;
+      document.body.style.color = textColor;
+      document.body.style.fontFamily = `${fontFamily}, sans-serif`;
+      document.body.style.fontSize = `${fontSize}px`;
+
+      document.querySelectorAll('.course-title').forEach(el => {
+        el.textContent = config.course_title || defaultConfig.course_title;
+      });
+      document.querySelectorAll('.instructor-name').forEach(el => {
+        el.textContent = config.instructor_name || defaultConfig.instructor_name;
+      });
+      document.querySelectorAll('.welcome-message').forEach(el => {
+        el.textContent = config.welcome_message || defaultConfig.welcome_message;
+      });
+      document.querySelectorAll('.surface-card').forEach(el => {
+        el.style.backgroundColor = surfaceColor;
+      });
+      document.querySelectorAll('.primary-btn').forEach(el => {
+        el.style.backgroundColor = primaryColor;
+      });
+      document.querySelectorAll('.secondary-btn').forEach(el => {
+        el.style.backgroundColor = secondaryColor;
+      });
+    }
+
+    function getProgress(type, id) {
+      return progressData.find(p => p.type === type && (p.lessonId === id || p.activityId === id || p.quizId === id));
+    }
+
+    function getWeekProgress(weekNum) {
+      const week = courseData.weeks.find(w => w.number === weekNum);
+      if (!week) return { completed: 0, total: 0, percentage: 0 };
+      
+      const totalLessons = week.lessons.length;
+      const totalActivities = week.activities.length;
+      const totalQuiz = 1;
+      const total = totalLessons + totalActivities + totalQuiz;
+
+      const completedLessons = week.lessons.filter(l => getProgress('lesson', l.id)?.completed).length;
+      const completedActivities = week.activities.filter(a => getProgress('activity', a.id)?.completed).length;
+      const completedQuiz = getProgress('quiz', week.quiz.id)?.completed ? 1 : 0;
+      const completed = completedLessons + completedActivities + completedQuiz;
+
+      return { completed, total, percentage: Math.round((completed / total) * 100) };
+    }
+
+    function getOverallProgress() {
+      let completed = 0;
+      let total = 0;
+      courseData.weeks.forEach(week => {
+        const wp = getWeekProgress(week.number);
+        completed += wp.completed;
+        total += wp.total;
+      });
+      return { completed, total, percentage: total > 0 ? Math.round((completed / total) * 100) : 0 };
+    }
+
+    async function markCompleted(type, id, weekNumber, score = null, maxScore = null) {
+      if (isLoading) return;
+      if (progressData.length >= 999) {
+        showToast("Storage limit reached.", "error");
+        return;
+      }
+
+      const existing = getProgress(type, id);
+      if (existing?.completed) return;
+
+      isLoading = true;
+      const record = {
+        id: `${type}-${id}-${Date.now()}`,
+        type,
+        weekNumber,
+        lessonId: type === 'lesson' ? id : null,
+        activityId: type === 'activity' ? id : null,
+        quizId: type === 'quiz' ? id : null,
+        score: score,
+        maxScore: maxScore,
+        completed: true,
+        answers: null,
+        completedAt: new Date().toISOString()
+      };
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.create(record);
+        if (!result.isOk) {
+          showToast("Failed to save progress", "error");
+        }
+      }
+      isLoading = false;
+    }
+
+    function updateProgressUI() {
+      document.querySelectorAll('.week-progress').forEach(el => {
+        const weekNum = parseInt(el.dataset.week);
+        const progress = getWeekProgress(weekNum);
+        el.textContent = `${progress.percentage}%`;
+        const bar = el.parentElement.querySelector('.progress-bar-fill');
+        if (bar) bar.style.width = `${progress.percentage}%`;
+      });
+
+      const overall = getOverallProgress();
+      const overallEl = document.querySelector('.overall-progress');
+      if (overallEl) {
+        overallEl.textContent = `${overall.percentage}%`;
+      }
+      const overallBar = document.querySelector('.overall-progress-bar');
+      if (overallBar) {
+        overallBar.style.width = `${overall.percentage}%`;
+      }
+
+      document.querySelectorAll('.completion-badge').forEach(el => {
+        const type = el.dataset.type;
+        const id = el.dataset.id;
+        const completed = getProgress(type, id)?.completed;
+        el.style.display = completed ? 'flex' : 'none';
+      });
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 animate-fade ${type === 'success' ? 'bg-emerald-500' : 'bg-red-500'} text-white`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    function render() {
+      const app = document.getElementById('app');
+      
+      switch (currentView) {
+        case 'dashboard':
+          renderDashboard(app);
+          break;
+        case 'week':
+          renderWeek(app);
+          break;
+        case 'lesson':
+          renderLesson(app);
+          break;
+        case 'quiz':
+          renderQuiz(app);
+          break;
+        default:
+          renderDashboard(app);
+      }
+      
+      applyConfig();
+      updateProgressUI();
+    }
+
+    function renderDashboard(container) {
+      const overall = getOverallProgress();
+      
+      container.innerHTML = `
+        <div class="min-h-full" style="background: linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, #e0f2fe 100%);">
+          <header class="surface-card shadow-sm border-b border-slate-200" style="background: ${config.surface_color || defaultConfig.surface_color};">
+            <div class="max-w-6xl mx-auto px-4 py-6">
+              <div class="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                  <h1 class="course-title text-2xl md:text-3xl font-bold" style="color: ${config.primary_action_color || defaultConfig.primary_action_color};">${config.course_title || defaultConfig.course_title}</h1>
+                  <p class="instructor-name text-slate-500 mt-1">Instructor: ${config.instructor_name || defaultConfig.instructor_name}</p>
+                </div>
+                <div class="flex items-center gap-4">
+                  <div class="text-right">
+                    <p class="text-sm text-slate-500">Overall Progress</p>
+                    <p class="overall-progress text-2xl font-bold" style="color: ${config.primary_action_color || defaultConfig.primary_action_color};">${overall.percentage}%</p>
+                  </div>
+                  <div class="w-16 h-16 relative">
+                    <svg class="w-16 h-16 transform -rotate-90">
+                      <circle cx="32" cy="32" r="28" fill="none" stroke="#e2e8f0" stroke-width="6"/>
+                      <circle cx="32" cy="32" r="28" fill="none" stroke="${config.primary_action_color || defaultConfig.primary_action_color}" stroke-width="6" 
+                        stroke-dasharray="${2 * Math.PI * 28}" 
+                        stroke-dashoffset="${2 * Math.PI * 28 * (1 - overall.percentage / 100)}"
+                        class="progress-ring"/>
+                    </svg>
+                    <span class="absolute inset-0 flex items-center justify-center text-lg">📚</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <div class="max-w-6xl mx-auto px-4 py-6">
+            <div class="surface-card rounded-2xl p-6 shadow-lg border border-slate-200 mb-8 animate-fade" style="background: linear-gradient(135deg, ${config.primary_action_color || defaultConfig.primary_action_color}15, ${config.secondary_action_color || defaultConfig.secondary_action_color}10);">
+              <div class="flex items-center gap-4">
+                <div class="text-4xl">🎓</div>
+                <div>
+                  <h2 class="text-xl font-semibold mb-1">Welcome to Information Management!</h2>
+                  <p class="welcome-message text-slate-600">${config.welcome_message || defaultConfig.welcome_message}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="surface-card rounded-xl p-4 shadow mb-8" style="background: ${config.surface_color || defaultConfig.surface_color};">
+              <div class="flex justify-between text-sm mb-2">
+                <span class="font-medium">Course Completion</span>
+                <span class="text-slate-500">${overall.completed} of ${overall.total} items</span>
+              </div>
+              <div class="h-3 bg-slate-200 rounded-full overflow-hidden">
+                <div class="overall-progress-bar h-full rounded-full transition-all duration-500" style="width: ${overall.percentage}%; background: linear-gradient(90deg, ${config.primary_action_color || defaultConfig.primary_action_color}, ${config.secondary_action_color || defaultConfig.secondary_action_color});"></div>
+              </div>
+            </div>
+
+            <h2 class="text-xl font-bold mb-4">Course Modules</h2>
+            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              ${courseData.weeks.map((week, idx) => {
+                const progress = getWeekProgress(week.number);
+                return `
+                  <div class="surface-card lesson-card rounded-xl p-5 shadow-lg border border-slate-200 cursor-pointer transition-all duration-300 hover:shadow-xl animate-fade" 
+                       style="animation-delay: ${idx * 0.1}s; background: ${config.surface_color || defaultConfig.surface_color};"
+                       onclick="openWeek(${week.number})">
+                    <div class="flex items-start justify-between mb-4">
+                      <div class="text-4xl">${week.icon}</div>
+                      <span class="px-3 py-1 rounded-full text-sm font-medium" style="background: ${week.color}20; color: ${week.color};">Week ${week.number}</span>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">${week.title}</h3>
+                    <p class="text-slate-500 text-sm mb-4">${week.lessons.length} lessons • ${week.activities.length} activities • 1 quiz</p>
+                    <div class="flex items-center gap-3">
+                      <div class="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+                        <div class="progress-bar-fill h-full rounded-full transition-all" style="width: ${progress.percentage}%; background: ${week.color};"></div>
+                      </div>
+                      <span class="week-progress text-sm font-semibold" data-week="${week.number}" style="color: ${week.color};">${progress.percentage}%</span>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openWeek(weekNum) {
+      currentWeek = courseData.weeks.find(w => w.number === weekNum);
+      currentView = 'week';
+      render();
+    }
+
+    function renderWeek(container) {
+      if (!currentWeek) return;
+      const progress = getWeekProgress(currentWeek.number);
+      
+      container.innerHTML = `
+        <div class="min-h-full" style="background: ${config.background_color || defaultConfig.background_color};">
+          <header class="surface-card shadow-sm border-b border-slate-200 sticky top-0 z-10" style="background: ${config.surface_color || defaultConfig.surface_color};">
+            <div class="max-w-4xl mx-auto px-4 py-4">
+              <div class="flex items-center gap-4">
+                <button onclick="goBack()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                  </svg>
+                </button>
+                <div class="flex-1">
+                  <p class="text-sm text-slate-500">Week ${currentWeek.number}</p>
+                  <h1 class="text-xl font-bold">${currentWeek.icon} ${currentWeek.title}</h1>
+                </div>
+                <div class="text-right">
+                  <p class="text-2xl font-bold" style="color: ${currentWeek.color};">${progress.percentage}%</p>
+                  <p class="text-xs text-slate-500">Complete</p>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <div class="max-w-4xl mx-auto px-4 py-6">
+            <section class="mb-8 animate-fade">
+              <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background: ${currentWeek.color};">📖</span>
+                Lessons
+              </h2>
+              <div class="space-y-3">
+                ${currentWeek.lessons.map((lesson, idx) => {
+                  const completed = getProgress('lesson', lesson.id)?.completed;
+                  return `
+                    <div class="surface-card rounded-xl p-4 shadow border border-slate-200 cursor-pointer transition-all hover:shadow-md ${completed ? 'opacity-80' : ''}" 
+                         style="background: ${config.surface_color || defaultConfig.surface_color};"
+                         onclick="openLesson('${lesson.id}')">
+                      <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold" 
+                             style="background: ${completed ? currentWeek.color : currentWeek.color + '20'}; color: ${completed ? 'white' : currentWeek.color};">
+                          ${completed ? '✓' : idx + 1}
+                        </div>
+                        <div class="flex-1">
+                          <h3 class="font-semibold">${lesson.title}</h3>
+                          <p class="text-sm text-slate-500">${lesson.duration}</p>
+                        </div>
+                        <div class="completion-badge hidden items-center gap-1 px-2 py-1 rounded-full text-xs font-medium" 
+                             data-type="lesson" data-id="${lesson.id}"
+                             style="background: ${currentWeek.color}20; color: ${currentWeek.color}; display: ${completed ? 'flex' : 'none'};">
+                          ✓ Completed
+                        </div>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </section>
+
+            <section class="mb-8 animate-fade" style="animation-delay: 0.1s;">
+              <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background: ${config.secondary_action_color || defaultConfig.secondary_action_color};">✏️</span>
+                Activities
+              </h2>
+              <div class="space-y-3">
+                ${currentWeek.activities.map((activity, idx) => {
+                  const completed = getProgress('activity', activity.id)?.completed;
+                  return `
+                    <div class="surface-card rounded-xl p-4 shadow border border-slate-200 ${completed ? 'opacity-80' : ''}" 
+                         style="background: ${config.surface_color || defaultConfig.surface_color};">
+                      <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0" 
+                             style="background: ${completed ? config.secondary_action_color || defaultConfig.secondary_action_color : (config.secondary_action_color || defaultConfig.secondary_action_color) + '20'}; color: ${completed ? 'white' : config.secondary_action_color || defaultConfig.secondary_action_color};">
+                          ${completed ? '✓' : idx + 1}
+                        </div>
+                        <div class="flex-1">
+                          <div class="flex items-center gap-2 mb-1">
+                            <h3 class="font-semibold">${activity.title}</h3>
+                            <span class="px-2 py-0.5 rounded text-xs" style="background: ${config.secondary_action_color || defaultConfig.secondary_action_color}20; color: ${config.secondary_action_color || defaultConfig.secondary_action_color};">${activity.type}</span>
+                          </div>
+                          <p class="text-sm text-slate-600 mb-3">${activity.description}</p>
+                          <div class="bg-slate-50 rounded-lg p-3">
+                            <p class="text-xs font-semibold text-slate-500 mb-2">Instructions:</p>
+                            <ul class="text-sm space-y-1">
+                              ${activity.instructions.map(i => `<li class="flex items-start gap-2"><span style="color: ${config.secondary_action_color || defaultConfig.secondary_action_color};">•</span>${i}</li>`).join('')}
+                            </ul>
+                          </div>
+                          ${!completed ? `
+                            <button onclick="completeActivity('${activity.id}')" 
+                                    class="primary-btn mt-3 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
+                                    style="background: ${config.primary_action_color || defaultConfig.primary_action_color};">
+                              Mark as Complete
+                            </button>
+                          ` : `
+                            <div class="mt-3 flex items-center gap-2 text-sm font-medium" style="color: ${config.primary_action_color || defaultConfig.primary_action_color};">
+                              ✓ Activity Completed
+                            </div>
+                          `}
+                        </div>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </section>
+
+            <section class="animate-fade" style="animation-delay: 0.2s;">
+              <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background: #f97316;">📝</span>
+                Assessment
+              </h2>
+              ${(() => {
+                const quizProgress = getProgress('quiz', currentWeek.quiz.id);
+                const completed = quizProgress?.completed;
+                return `
+                  <div class="surface-card rounded-xl p-5 shadow border border-slate-200" style="background: ${config.surface_color || defaultConfig.surface_color};">
+                    <div class="flex items-center justify-between mb-4">
+                      <div>
+                        <h3 class="font-bold text-lg">${currentWeek.quiz.title}</h3>
+                        <p class="text-sm text-slate-500">${currentWeek.quiz.questions.length} questions</p>
+                      </div>
+                      ${completed ? `
+                        <div class="text-right">
+                          <p class="text-2xl font-bold" style="color: ${config.primary_action_color || defaultConfig.primary_action_color};">${quizProgress.score}/${quizProgress.maxScore}</p>
+                          <p class="text-xs text-slate-500">Score</p>
+                        </div>
+                      ` : ''}
+                    </div>
+                    <button onclick="startQuiz()" 
+                            class="w-full py-3 rounded-lg text-white font-semibold transition-all hover:opacity-90"
+                            style="background: ${completed ? config.secondary_action_color || defaultConfig.secondary_action_color : config.primary_action_color || defaultConfig.primary_action_color};">
+                      ${completed ? 'Review Quiz' : 'Start Quiz'}
+                    </button>
+                  </div>
+                `;
+              })()}
+            </section>
+          </div>
+        </div>
+      `;
+    }
+
+    function openLesson(lessonId) {
+      currentLesson = currentWeek.lessons.find(l => l.id === lessonId);
+      currentView = 'lesson';
+      render();
+    }
+
+    function renderLesson(container) {
+      if (!currentLesson || !currentWeek) return;
+      const completed = getProgress('lesson', currentLesson.id)?.completed;
+      const lessonIdx = currentWeek.lessons.findIndex(l => l.id === currentLesson.id);
+      const nextLesson = currentWeek.lessons[lessonIdx + 1];
+      const prevLesson = currentWeek.lessons[lessonIdx - 1];
+
+      const styledContent = currentLesson.content
+        .replace(/<h2>/g, `<h2 class="text-2xl font-bold mb-4 mt-6" style="color: ${currentWeek.color};">`)
+        .replace(/<h3>/g, `<h3 class="text-lg font-semibold mb-3 mt-5">`)
+        .replace(/<h4>/g, `<h4 class="font-semibold mb-2 mt-4">`)
+        .replace(/<ul>/g, '<ul class="space-y-2 mb-4 ml-4">')
+        .replace(/<li>/g, `<li class="flex items-start gap-2"><span class="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style="background: ${currentWeek.color};"></span><span>`)
+        .replace(/<\/li>/g, '</span></li>')
+        .replace(/<p>/g, '<p class="mb-4 leading-relaxed">')
+        .replace(/<table>/g, `<table class="w-full border-collapse mb-4 rounded-lg overflow-hidden">`)
+        .replace(/<tr>/g, '<tr class="border-b border-slate-200">')
+        .replace(/<th>/g, `<th class="text-left p-3 font-semibold" style="background: ${currentWeek.color}20;">`)
+        .replace(/<td>/g, '<td class="p-3">')
+        .replace(/class="comparison-grid"/g, 'class="grid gap-3 md:grid-cols-2 mb-4"')
+        .replace(/class="comparison-item"/g, `class="p-3 rounded-lg border-l-4" style="background: ${currentWeek.color}10; border-color: ${currentWeek.color};"`)
+        .replace(/class="org-roles"/g, 'class="grid gap-4 md:grid-cols-2 mb-4"')
+        .replace(/class="role-section"/g, `class="p-4 rounded-xl border" style="background: ${config.surface_color || defaultConfig.surface_color}; border-color: ${currentWeek.color}30;"`)
+        .replace(/class="components-grid"/g, 'class="grid gap-3 md:grid-cols-2 lg:grid-cols-3 mb-4"')
+        .replace(/class="component-card"/g, `class="p-4 rounded-xl border text-center" style="background: ${config.surface_color || defaultConfig.surface_color}; border-color: ${config.secondary_action_color || defaultConfig.secondary_action_color}30;"`)
+        .replace(/class="component-icon"/g, 'class="text-4xl mb-2"')
+        .replace(/class="process-flow"/g, 'class="flex items-center justify-center gap-2 mb-4 flex-wrap"')
+        .replace(/class="flow-item"/g, `class="px-3 py-1 rounded-full text-sm font-medium" style="background: ${currentWeek.color}20;"`)
+        .replace(/class="arrow"/g, `class="text-xl" style="color: ${currentWeek.color};">→<`)
+        .replace(/class="timeline"/g, 'class="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-4"')
+        .replace(/class="timeline-item"/g, `class="p-4 rounded-xl" style="background: ${currentWeek.color}10;"`)
+        .replace(/class="timeline-date"/g, `class="inline-block px-2 py-1 rounded text-xs font-bold mb-2" style="background: ${currentWeek.color}; color: white;"`)
+        .replace(/class="advantage-types"/g, 'class="grid gap-3 md:grid-cols-2 mb-4"')
+        .replace(/class="advantage-item"/g, `class="p-3 rounded-lg" style="background: ${config.secondary_action_color || defaultConfig.secondary_action_color}10;"`)
+        .replace(/class="strategic-uses"/g, 'class="grid gap-4 md:grid-cols-2 mb-4"')
+        .replace(/class="use-card"/g, `class="p-4 rounded-xl border text-center" style="background: ${config.surface_color || defaultConfig.surface_color}; border-color: ${currentWeek.color}30;"`)
+        .replace(/class="icon"/g, 'class="text-3xl mb-2"')
+        .replace(/class="value-chain"/g, 'class="space-y-4 mb-4"')
+        .replace(/class="chain-items"/g, 'class="grid gap-3 md:grid-cols-2 mb-3"')
+        .replace(/class="chain-item"/g, `class="p-3 rounded-lg" style="background: ${currentWeek.color}10;"`)
+        .replace(/class="alignment-dims"/g, 'class="grid gap-3 md:grid-cols-2 mb-4"')
+        .replace(/class="dim-item"/g, `class="p-3 rounded-lg" style="background: ${config.secondary_action_color || defaultConfig.secondary_action_color}10;"`)
+        .replace(/class="alignment-model"/g, 'class="flex items-center gap-4 justify-center mb-4 flex-wrap"')
+        .replace(/class="model-box"/g, `class="p-3 rounded-lg flex-1 min-w-48" style="background: ${currentWeek.color}10;"`)
+        .replace(/class="model-arrow"/g, `class="text-2xl" style="color: ${currentWeek.color};">↔<`)
+        .replace(/class="example-box"/g, `class="p-4 rounded-xl mb-4" style="background: ${config.secondary_action_color || defaultConfig.secondary_action_color}10;"`)
+        .replace(/class="system-box"/g, `class="p-4 rounded-xl mb-4 border-l-4" style="background: ${currentWeek.color}10; border-color: ${currentWeek.color};"`)
+        .replace(/class="emerging-tech"/g, 'class="grid gap-3 md:grid-cols-2 mb-4"')
+        .replace(/class="tech-item"/g, `class="p-3 rounded-lg" style="background: ${currentWeek.color}10;"`)
+        .replace(/class="def-box"/g, `class="p-4 rounded-xl mb-4 border-l-4" style="background: ${currentWeek.color}10; border-color: ${currentWeek.color};"`)
+        .replace(/class="hierarchy-visual"/g, 'class="space-y-4 mb-4"')
+        .replace(/class="hierarchy-level"/g, `class="p-4 rounded-xl" style="background: ${currentWeek.color}10;"`)
+        .replace(/class="level-label"/g, `class="inline-block px-3 py-1 rounded-full text-sm font-bold mb-2" style="background: ${currentWeek.color}; color: white;"`)
+        .replace(/class="hierarchy-arrow"/g, `class="text-center text-2xl py-2" style="color: ${currentWeek.color};">↓<`)
+        .replace(/class="km-tech"/g, 'class="grid gap-3 md:grid-cols-2 mb-4"')
+        .replace(/class="planning-process"/g, 'class="grid gap-3 md:grid-cols-2 lg:grid-cols-3 mb-4"')
+        .replace(/class="process-step"/g, `class="p-4 rounded-xl text-center" style="background: ${currentWeek.color}10;"`)
+        .replace(/class="step-num"/g, `class="inline-flex items-center justify-center w-8 h-8 rounded-full text-white font-bold mb-2" style="background: ${currentWeek.color};"`)
+        .replace(/class="knowledge-types"/g, 'class="grid gap-4 md:grid-cols-2 mb-4"')
+        .replace(/class="type-item"/g, `class="p-4 rounded-xl border" style="background: ${config.surface_color || defaultConfig.surface_color}; border-color: ${currentWeek.color}30;"`)
+        .replace(/class="scorecard-perspectives"/g, 'class="grid gap-4 md:grid-cols-2 mb-4"')
+        .replace(/class="perspective"/g, `class="p-4 rounded-xl" style="background: ${config.secondary_action_color || defaultConfig.secondary_action_color}10;"`)
+        .replace(/class="sam-model"/g, 'class="grid gap-4 md:grid-cols-2 mb-4"')
+        .replace(/class="sam-item"/g, `class="p-4 rounded-xl" style="background: ${currentWeek.color}10;"`)
+        .replace(/class="challenge-box"/g, `class="p-4 rounded-xl mb-4 border border-red-300" style="background: #fee2e2;"`)
+        .replace(/class="cycle-flow"/g, 'class="mb-4 p-3 rounded-lg text-center" style="background: ' + currentWeek.color + '10;"')
+        .replace(/class="flow-note"/g, 'class="text-xs text-slate-500 mt-2"')
+        .replace(/<pre>/g, '<pre class="text-sm font-mono whitespace-pre">');
+
+      container.innerHTML = `
+        <div class="min-h-full" style="background: ${config.background_color || defaultConfig.background_color};">
+          <header class="surface-card shadow-sm border-b border-slate-200 sticky top-0 z-10" style="background: ${config.surface_color || defaultConfig.surface_color};">
+            <div class="max-w-4xl mx-auto px-4 py-4">
+              <div class="flex items-center gap-4">
+                <button onclick="backToWeek()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                  </svg>
+                </button>
+                <div class="flex-1">
+                  <p class="text-sm text-slate-500">Week ${currentWeek.number} • Lesson ${lessonIdx + 1}</p>
+                  <h1 class="text-lg font-bold">${currentLesson.title}</h1>
+                </div>
+                <span class="text-sm text-slate-500">${currentLesson.duration}</span>
+              </div>
+            </div>
+          </header>
+
+          <div class="max-w-4xl mx-auto px-4 py-6">
+            <div class="surface-card rounded-2xl p-6 md:p-8 shadow-lg animate-fade" style="background: ${config.surface_color || defaultConfig.surface_color};">
+              <article class="prose max-w-none">
+                ${styledContent}
+              </article>
+            </div>
+
+            <div class="flex items-center justify-between mt-6 gap-4">
+              ${prevLesson ? `
+                <button onclick="openLesson('${prevLesson.id}')" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-300 hover:bg-slate-100 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                  </svg>
+                  Previous
+                </button>
+              ` : '<div></div>'}
+              
+              ${!completed ? `
+                <button onclick="completeLesson('${currentLesson.id}')" 
+                        class="primary-btn px-6 py-2 rounded-lg text-white font-semibold transition-all hover:opacity-90"
+                        style="background: ${config.primary_action_color || defaultConfig.primary_action_color};">
+                  Mark Complete
+                </button>
+              ` : `
+                <span class="flex items-center gap-2 px-4 py-2 rounded-lg font-medium" style="background: ${config.primary_action_color || defaultConfig.primary_action_color}20; color: ${config.primary_action_color || defaultConfig.primary_action_color};">
+                  ✓ Completed
+                </span>
+              `}
+              
+              ${nextLesson ? `
+                <button onclick="openLesson('${nextLesson.id}')" class="flex items-center gap-2 px-4 py-2 rounded-lg text-white transition-all hover:opacity-90" style="background: ${config.secondary_action_color || defaultConfig.secondary_action_color};">
+                  Next
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </button>
+              ` : `
+                <button onclick="backToWeek()" class="flex items-center gap-2 px-4 py-2 rounded-lg text-white transition-all hover:opacity-90" style="background: ${config.primary_action_color || defaultConfig.primary_action_color};">
+                  Back to Week
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </button>
+              `}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function completeLesson(lessonId) {
+      await markCompleted('lesson', lessonId, currentWeek.number);
+      showToast('Lesson completed! 🎉');
+      render();
+    }
+
+    async function completeActivity(activityId) {
+      await markCompleted('activity', activityId, currentWeek.number);
+      showToast('Activity completed! Great work! 💪');
+      render();
+    }
+
+    function startQuiz() {
+      currentQuiz = currentWeek.quiz;
+      const existingProgress = getProgress('quiz', currentQuiz.id);
+      quizState = { 
+        currentQuestion: 0, 
+        answers: existingProgress?.answers ? JSON.parse(existingProgress.answers) : [], 
+        submitted: existingProgress?.completed || false 
+      };
+      currentView = 'quiz';
+      render();
+    }
+
+    function renderQuiz(container) {
+      if (!currentQuiz || !currentWeek) return;
+      const question = currentQuiz.questions[quizState.currentQuestion];
+      const totalQuestions = currentQuiz.questions.length;
+      const existingProgress = getProgress('quiz', currentQuiz.id);
+
+      container.innerHTML = `
+        <div class="min-h-full" style="background: ${config.background_color || defaultConfig.background_color};">
+          <header class="surface-card shadow-sm border-b border-slate-200 sticky top-0 z-10" style="background: ${config.surface_color || defaultConfig.surface_color};">
+            <div class="max-w-3xl mx-auto px-4 py-4">
+              <div class="flex items-center gap-4">
+                <button onclick="backToWeek()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                  </svg>
+                </button>
+                <div class="flex-1">
+                  <p class="text-sm text-slate-500">Week ${currentWeek.number}</p>
+                  <h1 class="text-lg font-bold">${currentQuiz.title}</h1>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm font-semibold" style="color: ${currentWeek.color};">Question ${quizState.currentQuestion + 1}/${totalQuestions}</p>
+                </div>
+              </div>
+              <div class="h-1.5 bg-slate-200 rounded-full mt-3 overflow-hidden">
+                <div class="h-full rounded-full transition-all duration-300" style="width: ${((quizState.currentQuestion + 1) / totalQuestions) * 100}%; background: ${currentWeek.color};"></div>
+              </div>
+            </div>
+          </header>
+
+          <div class="max-w-3xl mx-auto px-4 py-6">
+            <div class="surface-card rounded-2xl p-6 md:p-8 shadow-lg animate-fade" style="background: ${config.surface_color || defaultConfig.surface_color};">
+              <h2 class="text-xl font-bold mb-6">${question.question}</h2>
+
+              <div class="space-y-3" id="quiz-options">
+                ${question.options.map((option, idx) => {
+                  const isSelected = quizState.answers[quizState.currentQuestion] === idx;
+                  const isCorrect = quizState.submitted && idx === question.correct;
+                  const isIncorrect = quizState.submitted && isSelected && idx !== question.correct;
+                  
+                  let optionClass = 'quiz-option';
+                  if (isSelected && !quizState.submitted) optionClass += ' selected';
+                  if (isCorrect) optionClass += ' correct';
+                  if (isIncorrect) optionClass += ' incorrect';
+
+                  return `
+                    <button onclick="selectOption(${idx})" 
+                            class="${optionClass} w-full p-4 rounded-xl border-2 text-left transition-all flex items-center gap-3 ${quizState.submitted ? 'cursor-default' : 'cursor-pointer'}"
+                            ${quizState.submitted ? 'disabled' : ''}>
+                      <span class="w-8 h-8 rounded-full border-2 flex items-center justify-center font-semibold shrink-0 ${isCorrect ? 'bg-emerald-500 border-emerald-500 text-white' : isIncorrect ? 'bg-red-500 border-red-500 text-white' : isSelected ? 'border-cyan-500 bg-cyan-500 text-white' : 'border-slate-300'}">
+                        ${isCorrect ? '✓' : isIncorrect ? '✗' : String.fromCharCode(65 + idx)}
+                      </span>
+                      <span class="flex-1">${option}</span>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+
+              ${quizState.submitted ? `
+                <div class="mt-6 p-4 rounded-xl ${quizState.answers[quizState.currentQuestion] === question.correct ? 'bg-emerald-50 border border-emerald-200' : 'bg-red-50 border border-red-200'}">
+                  <p class="font-semibold mb-1 ${quizState.answers[quizState.currentQuestion] === question.correct ? 'text-emerald-700' : 'text-red-700'}">
+                    ${quizState.answers[quizState.currentQuestion] === question.correct ? '✓ Correct!' : '✗ Incorrect'}
+                  </p>
+                  <p class="text-sm text-slate-600">${question.explanation}</p>
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="flex items-center justify-between mt-6 gap-4">
+              ${quizState.currentQuestion > 0 ? `
+                <button onclick="prevQuestion()" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-300 hover:bg-white transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                  </svg>
+                  Previous
+                </button>
+              ` : '<div></div>'}
+
+              ${!quizState.submitted ? `
+                <button onclick="submitQuiz()" 
+                        class="primary-btn px-6 py-2 rounded-lg text-white font-semibold transition-all hover:opacity-90 ${quizState.answers[quizState.currentQuestion] === undefined ? 'opacity-50 cursor-not-allowed' : ''}"
+                        style="background: ${config.primary_action_color || defaultConfig.primary_action_color};"
+                        ${quizState.answers[quizState.currentQuestion] === undefined ? 'disabled' : ''}>
+                  ${quizState.currentQuestion === totalQuestions - 1 ? 'Submit Quiz' : 'Check Answer'}
+                </button>
+              ` : `
+                ${quizState.currentQuestion < totalQuestions - 1 ? `
+                  <button onclick="nextQuestion()" class="flex items-center gap-2 px-6 py-2 rounded-lg text-white font-semibold transition-all hover:opacity-90" style="background: ${config.secondary_action_color || defaultConfig.secondary_action_color};">
+                    Next Question
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                  </button>
+                ` : `
+                  <button onclick="finishQuiz()" class="flex items-center gap-2 px-6 py-2 rounded-lg text-white font-semibold transition-all hover:opacity-90" style="background: ${config.primary_action_color || defaultConfig.primary_action_color};">
+                    See Results
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                  </button>
+                `}
+              `}
+            </div>
+
+            ${quizState.submitted && existingProgress?.completed ? `
+              <div class="mt-6 surface-card rounded-xl p-4 shadow" style="background: ${config.surface_color || defaultConfig.surface_color};">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-slate-500">Your Score</span>
+                  <span class="text-xl font-bold" style="color: ${config.primary_action_color || defaultConfig.primary_action_color};">${existingProgress.score}/${existingProgress.maxScore}</span>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function selectOption(idx) {
+      if (quizState.submitted) return;
+      quizState.answers[quizState.currentQuestion] = idx;
+      render();
+    }
+
+    async function submitQuiz() {
+      quizState.submitted = true;
+      
+      if (quizState.currentQuestion === currentQuiz.questions.length - 1) {
+        const score = quizState.answers.reduce((acc, ans, idx) => {
+          return acc + (ans === currentQuiz.questions[idx].correct ? 1 : 0);
+        }, 0);
+        
+        const existingProgress = getProgress('quiz', currentQuiz.id);
+        if (!existingProgress?.completed) {
+          await markCompleted('quiz', currentQuiz.id, currentWeek.number, score, currentQuiz.questions.length);
+        }
+      }
+      
+      render();
+    }
+
+    function nextQuestion() {
+      if (quizState.currentQuestion < currentQuiz.questions.length - 1) {
+        quizState.currentQuestion++;
+        quizState.submitted = getProgress('quiz', currentQuiz.id)?.completed || false;
+        render();
+      }
+    }
+
+    function prevQuestion() {
+      if (quizState.currentQuestion > 0) {
+        quizState.currentQuestion--;
+        quizState.submitted = getProgress('quiz', currentQuiz.id)?.completed || false;
+        render();
+      }
+    }
+
+    function finishQuiz() {
+      const score = quizState.answers.reduce((acc, ans, idx) => {
+        return acc + (ans === currentQuiz.questions[idx].correct ? 1 : 0);
+      }, 0);
+      
+      showToast(`Quiz completed! Score: ${score}/${currentQuiz.questions.length} 🎉`);
+      backToWeek();
+    }
+
+    function goBack() {
+      currentView = 'dashboard';
+      currentWeek = null;
+      currentLesson = null;
+      currentQuiz = null;
+      render();
+    }
+
+    function backToWeek() {
+      currentView = 'week';
+      currentLesson = null;
+      currentQuiz = null;
+      render();
+    }
+
+    initializeApp();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cd481958630fed1',t:'MTc3MDk4NzYwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
